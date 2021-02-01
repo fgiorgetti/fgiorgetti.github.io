@@ -9,11 +9,11 @@
   <meta name="robots" content="all,follow">
   <meta name="googlebot" content="index,follow,snippet,archive">
   <meta property="og:title" content="Maintaining your Skupper Virtual Application Network with Gitops" />
-<meta property="og:description" content="Hybrid Cloud using Skupper Skupper enables service communication, transparently, across multiple hybrid Kubernetes clusters.
+<meta property="og:description" content="Hybrid Cloud using Skupper Skupper enables service communication, transparently, across multiple Kubernetes clusters.
 For more information about Skupper, as well as documentation and great examples, please visit https://skupper.io/.
 This article demonstrates how to setup and maintain a Virtual Application Network (VAN) using Skupper.
 The standard documented approach for setting up a Skupper network, is through the use of its Command Line Interface (CLI) tool named skupper.
-Following the documentation and some examples, you will connect your hybrid cloud through a set of imperative commands that will help you setting everything up." />
+Following its documentation and some examples, you will connect your cloud applications through a set of imperative commands that will help you setting everything up." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://fgiorgetti.github.io/posts/20210129-skupper-and-gitops/" />
 <meta property="article:published_time" content="2021-01-29T18:27:23-03:00" />
@@ -21,11 +21,11 @@ Following the documentation and some examples, you will connect your hybrid clou
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Maintaining your Skupper Virtual Application Network with Gitops"/>
-<meta name="twitter:description" content="Hybrid Cloud using Skupper Skupper enables service communication, transparently, across multiple hybrid Kubernetes clusters.
+<meta name="twitter:description" content="Hybrid Cloud using Skupper Skupper enables service communication, transparently, across multiple Kubernetes clusters.
 For more information about Skupper, as well as documentation and great examples, please visit https://skupper.io/.
 This article demonstrates how to setup and maintain a Virtual Application Network (VAN) using Skupper.
 The standard documented approach for setting up a Skupper network, is through the use of its Command Line Interface (CLI) tool named skupper.
-Following the documentation and some examples, you will connect your hybrid cloud through a set of imperative commands that will help you setting everything up."/>
+Following its documentation and some examples, you will connect your cloud applications through a set of imperative commands that will help you setting everything up."/>
 
   
   
@@ -142,7 +142,7 @@ Following the documentation and some examples, you will connect your hybrid clou
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&name=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops&description=Hybrid%20Cloud%20using%20Skupper%20Skupper%20enables%20service%20communication%2c%20transparently%2c%20across%20multiple%20hybrid%20Kubernetes%20clusters.%0aFor%20more%20information%20about%20Skupper%2c%20as%20well%20as%20documentation%20and%20great%20examples%2c%20please%20visit%20https%3a%2f%2fskupper.io%2f.%0aThis%20article%20demonstrates%20how%20to%20setup%20and%20maintain%20a%20Virtual%20Application%20Network%20%28VAN%29%20using%20Skupper.%0aThe%20standard%20documented%20approach%20for%20setting%20up%20a%20Skupper%20network%2c%20is%20through%20the%20use%20of%20its%20Command%20Line%20Interface%20%28CLI%29%20tool%20named%20skupper.%0aFollowing%20the%20documentation%20and%20some%20examples%2c%20you%20will%20connect%20your%20hybrid%20cloud%20through%20a%20set%20of%20imperative%20commands%20that%20will%20help%20you%20setting%20everything%20up.">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&name=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops&description=Hybrid%20Cloud%20using%20Skupper%20Skupper%20enables%20service%20communication%2c%20transparently%2c%20across%20multiple%20Kubernetes%20clusters.%0aFor%20more%20information%20about%20Skupper%2c%20as%20well%20as%20documentation%20and%20great%20examples%2c%20please%20visit%20https%3a%2f%2fskupper.io%2f.%0aThis%20article%20demonstrates%20how%20to%20setup%20and%20maintain%20a%20Virtual%20Application%20Network%20%28VAN%29%20using%20Skupper.%0aThe%20standard%20documented%20approach%20for%20setting%20up%20a%20Skupper%20network%2c%20is%20through%20the%20use%20of%20its%20Command%20Line%20Interface%20%28CLI%29%20tool%20named%20skupper.%0aFollowing%20its%20documentation%20and%20some%20examples%2c%20you%20will%20connect%20your%20cloud%20applications%20through%20a%20set%20of%20imperative%20commands%20that%20will%20help%20you%20setting%20everything%20up.">
       <i class="fab fa-tumblr " aria-hidden="true"></i>
     </a>
   </li>
@@ -196,16 +196,16 @@ Following the documentation and some examples, you will connect your hybrid clou
     <div class="content" itemprop="articleBody">
       <h1 id="hybrid-cloud-using-skupper">Hybrid Cloud using Skupper</h1>
 <p>Skupper enables service communication, transparently,
-across multiple hybrid Kubernetes clusters.</p>
+across multiple Kubernetes clusters.</p>
 <p>For more information about Skupper, as well as documentation and
 great examples, please visit <a href="https://skupper.io/">https://skupper.io/</a>.</p>
 <p>This article demonstrates how to setup and maintain a
 Virtual Application Network (VAN) using Skupper.</p>
 <p>The standard documented approach for setting up a Skupper network, is
 through the use of its Command Line Interface (CLI) tool named <code>skupper</code>.</p>
-<p>Following the documentation and some examples, you will connect your hybrid
-cloud through a set of imperative commands that will help you setting everything
-up.</p>
+<p>Following its documentation and some examples, you will connect your
+cloud applications through a set of imperative commands that will help you
+setting everything up.</p>
 <p>This approach works just fine. But imagine if you have a set of services
 to be exposed and you have multiple sites to maintain.</p>
 <p>Your exposed services may need to change from time to time and/or you might
@@ -215,7 +215,7 @@ so your environment is always at the expected state, and this is not a trivial
 thing to achieve.</p>
 <h1 id="gitops-using-argo-cd">GitOps using Argo CD</h1>
 <p>The goal here is to demonstrate how you can setup a GitOps operator in your
-cluster, so that all your Hybrid Cloud, as well as your Virtual Application Network
+cluster, so that all your distribute application, as well as your Virtual Application Network
 can always be up to date with your desired state, or a single source of truth.</p>
 <p>Argo CD helps you maintaining the state of your Kubernetes resources in sync
 with a Git Repository (your source of truth).</p>
@@ -627,7 +627,7 @@ service <code>hello-world-backend</code>.</p>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&name=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops&description=Hybrid%20Cloud%20using%20Skupper%20Skupper%20enables%20service%20communication%2c%20transparently%2c%20across%20multiple%20hybrid%20Kubernetes%20clusters.%0aFor%20more%20information%20about%20Skupper%2c%20as%20well%20as%20documentation%20and%20great%20examples%2c%20please%20visit%20https%3a%2f%2fskupper.io%2f.%0aThis%20article%20demonstrates%20how%20to%20setup%20and%20maintain%20a%20Virtual%20Application%20Network%20%28VAN%29%20using%20Skupper.%0aThe%20standard%20documented%20approach%20for%20setting%20up%20a%20Skupper%20network%2c%20is%20through%20the%20use%20of%20its%20Command%20Line%20Interface%20%28CLI%29%20tool%20named%20skupper.%0aFollowing%20the%20documentation%20and%20some%20examples%2c%20you%20will%20connect%20your%20hybrid%20cloud%20through%20a%20set%20of%20imperative%20commands%20that%20will%20help%20you%20setting%20everything%20up.">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&name=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops&description=Hybrid%20Cloud%20using%20Skupper%20Skupper%20enables%20service%20communication%2c%20transparently%2c%20across%20multiple%20Kubernetes%20clusters.%0aFor%20more%20information%20about%20Skupper%2c%20as%20well%20as%20documentation%20and%20great%20examples%2c%20please%20visit%20https%3a%2f%2fskupper.io%2f.%0aThis%20article%20demonstrates%20how%20to%20setup%20and%20maintain%20a%20Virtual%20Application%20Network%20%28VAN%29%20using%20Skupper.%0aThe%20standard%20documented%20approach%20for%20setting%20up%20a%20Skupper%20network%2c%20is%20through%20the%20use%20of%20its%20Command%20Line%20Interface%20%28CLI%29%20tool%20named%20skupper.%0aFollowing%20its%20documentation%20and%20some%20examples%2c%20you%20will%20connect%20your%20cloud%20applications%20through%20a%20set%20of%20imperative%20commands%20that%20will%20help%20you%20setting%20everything%20up.">
       <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
     </a>
   </li>

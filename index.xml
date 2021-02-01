@@ -14,11 +14,11 @@
       <pubDate>Fri, 29 Jan 2021 18:27:23 -0300</pubDate>
       
       <guid>https://fgiorgetti.github.io/posts/20210129-skupper-and-gitops/</guid>
-      <description>Hybrid Cloud using Skupper Skupper enables service communication, transparently, across multiple hybrid Kubernetes clusters.
+      <description>Hybrid Cloud using Skupper Skupper enables service communication, transparently, across multiple Kubernetes clusters.
 For more information about Skupper, as well as documentation and great examples, please visit https://skupper.io/.
 This article demonstrates how to setup and maintain a Virtual Application Network (VAN) using Skupper.
 The standard documented approach for setting up a Skupper network, is through the use of its Command Line Interface (CLI) tool named skupper.
-Following the documentation and some examples, you will connect your hybrid cloud through a set of imperative commands that will help you setting everything up.</description>
+Following its documentation and some examples, you will connect your cloud applications through a set of imperative commands that will help you setting everything up.</description>
     </item>
     
   </channel>

@@ -9,16 +9,16 @@
     <copyright>Fernando Giorgetti</copyright>
     <lastBuildDate>Fri, 29 Jan 2021 18:27:23 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Skupper and Gitops</title>
+      <title>Maintaining your Skupper Virtual Application Network with Gitops</title>
       <link>https://fgiorgetti.github.io/posts/20210129-skupper-and-gitops/</link>
       <pubDate>Fri, 29 Jan 2021 18:27:23 -0300</pubDate>
       
       <guid>https://fgiorgetti.github.io/posts/20210129-skupper-and-gitops/</guid>
-      <description>Skupper enables service communication, transparently, across multiple hybrid Kubernetes clusters.
+      <description>Hybrid Cloud using Skupper Skupper enables service communication, transparently, across multiple hybrid Kubernetes clusters.
 For more information about Skupper, as well as documentation and great examples, please visit https://skupper.io/.
-This article will demonstrate how to setup and maintain a Virtual Application Network (VAN) using Skupper.
+This article demonstrates how to setup and maintain a Virtual Application Network (VAN) using Skupper.
 The standard documented approach for setting up a Skupper network, is through the use of its Command Line Interface (CLI) tool named skupper.
-Following the documentation and some examples, you will connect your network through a set of imperative commands that are used to initialize and connect your network.</description>
+Following the documentation and some examples, you will connect your hybrid cloud through a set of imperative commands that will help you setting everything up.</description>
     </item>
     
   </channel>

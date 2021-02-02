@@ -157,6 +157,10 @@ Following its documentation and some examples, you will connect your cloud appli
     <div id="toc">
       <nav id="TableOfContents">
   <ul>
+    <li><a href="#understanding-what-has-just-been-deployed">Understanding what has just been deployed</a></li>
+  </ul>
+
+  <ul>
     <li><a href="#creating-a-skupper-application-on-the-west-namespace">Creating a Skupper application on the west namespace</a></li>
     <li><a href="#creating-a-skupper-application-on-the-east-namespace">Creating a Skupper application on the east namespace</a></li>
     <li><a href="#verifying-the-skupper-network">Verifying the Skupper network</a>
@@ -400,6 +404,19 @@ it is up, but failing because it cannot reach the <code>backend</code> service.<
 <p>You should see an error like:</p>
 <pre><code>Trouble! HTTPConnectionPool(host='hello-world-backend', port=8080): Max retries exceeded with url: /api/hello (Caused by NewConnectionError('&lt;urllib3.connection.HTTPConnection object at 0x7f0d059d7dd0&gt;: Failed to establish a new connection: [Errno -2] Name or service not known'))
 </code></pre><p>The error above is an expected error, since both namespaces do not communicate&hellip; yet.</p>
+<h2 id="understanding-what-has-just-been-deployed">Understanding what has just been deployed</h2>
+<p>Inspect the deployment descriptor for the <code>hello-world-backend</code> application that
+has just been deployed to the <code>east</code> namespace.</p>
+<p><a href="https://github.com/fgiorgetti/skupper-example-hello-world/blob/0388bee7b89ba01402bc0edddcd99ec531b3a4e0/gitops/east/backend/01-deployment.yaml#L7-L9">/gitops/east/backend/01-deployment.yaml</a></p>
+<p>Note that is contains two annotations:</p>
+<pre><code>    skupper.io/port: &quot;8080&quot;
+    skupper.io/proxy: &quot;http&quot;
+</code></pre><p>The first one <code>skupper.io/port</code> defines the port of the deployment to be exposed
+and the second one <code>skupper.io/proxy</code> defines the protocol of the service being
+exposed.</p>
+<p>This is what you need to add to the resource you want to expose, so when Skupper
+is initialized in your namespace, it will create the respective service accordingly.
+The new service will be replicated to other sites automatically.</p>
 <h1 id="declaring-a-skupper-network-in-your-git-repository">Declaring a Skupper network in your git repository</h1>
 <p>First thing to do is ensure that we have Skupper running on both namespaces.
 To do that, lets define another two Argo CD applications (one for each namespace).</p>
@@ -557,6 +574,10 @@ service <code>hello-world-backend</code>.</p>
 
     <div id="toc-footer" style="display: none">
       <nav id="TableOfContents">
+  <ul>
+    <li><a href="#understanding-what-has-just-been-deployed">Understanding what has just been deployed</a></li>
+  </ul>
+
   <ul>
     <li><a href="#creating-a-skupper-application-on-the-west-namespace">Creating a Skupper application on the west namespace</a></li>
     <li><a href="#creating-a-skupper-application-on-the-east-namespace">Creating a Skupper application on the east namespace</a></li>

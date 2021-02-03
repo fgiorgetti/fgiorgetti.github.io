@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>argocd on Fernando Giorgetti - about me</title>
+    <link>https://fgiorgetti.github.io/tags/argocd/</link>
+    <description>Recent content in argocd on Fernando Giorgetti - about me</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Fernando Giorgetti</copyright>
+    <lastBuildDate>Fri, 29 Jan 2021 18:27:23 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/argocd/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Maintaining your Skupper Virtual Application Network with Gitops</title>
+      <link>https://fgiorgetti.github.io/posts/20210129-skupper-and-gitops/</link>
+      <pubDate>Fri, 29 Jan 2021 18:27:23 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/posts/20210129-skupper-and-gitops/</guid>
+      <description>Hybrid Cloud using Skupper Skupper enables service communication, transparently, across multiple Kubernetes clusters.
+For more information about Skupper, as well as documentation and great examples, please visit https://skupper.io/.
+This article demonstrates how to setup and maintain a Virtual Application Network (VAN) using Skupper.
+The standard documented approach for setting up a Skupper network, is through the use of its Command Line Interface (CLI) tool named skupper.
+Following its documentation and some examples, you will connect your cloud applications through a set of imperative commands that will help you setting everything up.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -177,8 +177,8 @@ Following its documentation and some examples, you will connect your cloud appli
     <li><a href="#validate-applications-are-running">Validate applications are running</a></li>
     <li><a href="#declaring-a-skupper-network-in-your-git-repository">Declaring a Skupper network in your git repository</a>
       <ul>
-        <li><a href="#creating-a-skupper-application-on-the-west-namespace">Creating a Skupper application on the west namespace</a></li>
-        <li><a href="#creating-a-skupper-application-on-the-east-namespace">Creating a Skupper application on the east namespace</a></li>
+        <li><a href="#creating-a-skupper-site-on-the-west-namespace">Creating a Skupper site on the west namespace</a></li>
+        <li><a href="#creating-a-skupper-site-on-the-east-namespace">Creating a Skupper site on the east namespace</a></li>
         <li><a href="#verifying-the-skupper-network">Verifying the Skupper network</a>
           <ul>
             <li><a href="#validating-pods">Validating pods</a></li>
@@ -474,7 +474,7 @@ it is up, but failing because it cannot reach the <code>backend</code> service.<
 <h2 id="declaring-a-skupper-network-in-your-git-repository">Declaring a Skupper network in your git repository</h2>
 <p>First thing to do is ensure that we have Skupper running on both namespaces.
 To do that, lets define another two Argo CD applications (one for each namespace).</p>
-<h3 id="creating-a-skupper-application-on-the-west-namespace">Creating a Skupper application on the west namespace</h3>
+<h3 id="creating-a-skupper-site-on-the-west-namespace">Creating a Skupper site on the west namespace</h3>
 <ol>
 <li>At the Argo CD console, click &ldquo;+ NEW APP&rdquo;</li>
 <li>Enter the new application information:
@@ -508,7 +508,7 @@ To do that, lets define another two Argo CD applications (one for each namespace
 </li>
 <li>Click <code>CREATE</code>.</li>
 </ol>
-<h3 id="creating-a-skupper-application-on-the-east-namespace">Creating a Skupper application on the east namespace</h3>
+<h3 id="creating-a-skupper-site-on-the-east-namespace">Creating a Skupper site on the east namespace</h3>
 <ol>
 <li>Back to the Argo CD console, click &ldquo;+ NEW APP&rdquo;</li>
 <li>Enter the new application information:
@@ -643,8 +643,8 @@ service <code>hello-world-backend</code>.</p>
     <li><a href="#validate-applications-are-running">Validate applications are running</a></li>
     <li><a href="#declaring-a-skupper-network-in-your-git-repository">Declaring a Skupper network in your git repository</a>
       <ul>
-        <li><a href="#creating-a-skupper-application-on-the-west-namespace">Creating a Skupper application on the west namespace</a></li>
-        <li><a href="#creating-a-skupper-application-on-the-east-namespace">Creating a Skupper application on the east namespace</a></li>
+        <li><a href="#creating-a-skupper-site-on-the-west-namespace">Creating a Skupper site on the west namespace</a></li>
+        <li><a href="#creating-a-skupper-site-on-the-east-namespace">Creating a Skupper site on the east namespace</a></li>
         <li><a href="#verifying-the-skupper-network">Verifying the Skupper network</a>
           <ul>
             <li><a href="#validating-pods">Validating pods</a></li>

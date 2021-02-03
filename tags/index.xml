@@ -7,7 +7,34 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Fernando Giorgetti</copyright>
-    <lastBuildDate>Fri, 29 Jan 2021 18:27:23 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 03 Feb 2021 17:15:08 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>bash</title>
+      <link>https://fgiorgetti.github.io/tags/bash/</link>
+      <pubDate>Wed, 03 Feb 2021 17:15:08 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/tags/bash/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cobra</title>
+      <link>https://fgiorgetti.github.io/tags/cobra/</link>
+      <pubDate>Wed, 03 Feb 2021 17:15:08 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/tags/cobra/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>golang</title>
+      <link>https://fgiorgetti.github.io/tags/golang/</link>
+      <pubDate>Wed, 03 Feb 2021 17:15:08 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/tags/golang/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>argocd</title>
       <link>https://fgiorgetti.github.io/tags/argocd/</link>

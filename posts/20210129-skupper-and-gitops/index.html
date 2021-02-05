@@ -258,6 +258,9 @@ need to recover one of your sites if something goes wrong. To keep everything
 in shape, you will need to execute multiple commands or write a set of scripts
 so your environment is always at the expected state, and this is not a trivial
 thing to achieve.</p>
+<p>Skupper provides a <a href="https://skupper.io/start/index.html">Getting started</a> which shows how to connect two clusters using
+the CLI. They also document connecting two clusters in Configuring Skupper sites using YAML.</p>
+<p>In order to keep this tutorial simple, we will connect two namespaces in the same cluster while showing you how to use Argo CD.</p>
 <h2 id="gitops-using-argo-cd">GitOps using Argo CD</h2>
 <p>The goal here is to demonstrate how you can setup a GitOps operator in your
 cluster, so that all your distribute application, as well as your Virtual Application Network
@@ -267,6 +270,9 @@ with a Git Repository (your source of truth).</p>
 <p>Therefore all you need to do is keep your resources updated in your repository,
 adjusting them as needed, and Argo CD will guarantee your cluster has always
 the latest version you have defined.</p>
+<p>In this tutorial, I am using a personal git repository. If you want to make changes to the resources used in this
+example to observe Argo CD syncing it with your cluster, feel free to fork the <a href="https://github.com/fgiorgetti/skupper-example-hello-world.git">sample repository</a> (branch: <strong>gitops</strong>) and update
+the GIT url used in the upcoming sections.</p>
 <h2 id="setting-up-a-local-cluster">Setting up a local cluster</h2>
 <p>If you don&rsquo;t yet have a running cluster, you can follow the steps below to
 download and run a local Minikube cluster in your machine.</p>

@@ -35,32 +35,5 @@
       <description></description>
     </item>
     
-    <item>
-      <title>argocd</title>
-      <link>https://fgiorgetti.github.io/tags/argocd/</link>
-      <pubDate>Fri, 29 Jan 2021 18:27:23 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/argocd/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>gitops</title>
-      <link>https://fgiorgetti.github.io/tags/gitops/</link>
-      <pubDate>Fri, 29 Jan 2021 18:27:23 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/gitops/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>skupper</title>
-      <link>https://fgiorgetti.github.io/tags/skupper/</link>
-      <pubDate>Fri, 29 Jan 2021 18:27:23 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/skupper/</guid>
-      <description></description>
-    </item>
-    
   </channel>
 </rss>

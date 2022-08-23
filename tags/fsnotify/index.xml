@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>fsnotify on Fernando Giorgetti - about me</title>
+    <link>https://fgiorgetti.github.io/tags/fsnotify/</link>
+    <description>Recent content in fsnotify on Fernando Giorgetti - about me</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Fernando Giorgetti</copyright>
+    <lastBuildDate>Tue, 23 Aug 2022 00:21:47 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/fsnotify/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>File Watcher With Fsnotify</title>
+      <link>https://fgiorgetti.github.io/posts/20220823-file-watcher-with-fsnotify/</link>
+      <pubDate>Tue, 23 Aug 2022 00:21:47 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/posts/20220823-file-watcher-with-fsnotify/</guid>
+      <description>Sometimes we need to watch for modifications in specific locations in the filesystem, reacting to them differently.
+As an example, an alert could be triggered if a specific file is modified or a backup procedure could start as new files are created into specific directories.
+There are several tools and libraries to help doing that, but since I am evaluating libraries in Go, I have decided to play with fsnotify and write a bit about it.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -7,7 +7,18 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Fernando Giorgetti</copyright>
-    <lastBuildDate>Wed, 03 Feb 2021 17:15:08 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 23 Aug 2022 00:21:47 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>File Watcher With Fsnotify</title>
+      <link>https://fgiorgetti.github.io/posts/20220823-file-watcher-with-fsnotify/</link>
+      <pubDate>Tue, 23 Aug 2022 00:21:47 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/posts/20220823-file-watcher-with-fsnotify/</guid>
+      <description>Sometimes we need to watch for modifications in specific locations in the filesystem, reacting to them differently.
+As an example, an alert could be triggered if a specific file is modified or a backup procedure could start as new files are created into specific directories.
+There are several tools and libraries to help doing that, but since I am evaluating libraries in Go, I have decided to play with fsnotify and write a bit about it.</description>
+    </item>
+    
     <item>
       <title>Golang Bash Completion with Cobra API</title>
       <link>https://fgiorgetti.github.io/posts/20210203-golang-bash-completion/</link>

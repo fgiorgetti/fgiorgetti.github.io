@@ -1,48 +1,721 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Posts on Fernando Giorgetti - about me</title>
-    <link>https://fgiorgetti.github.io/posts/</link>
-    <description>Recent content in Posts on Fernando Giorgetti - about me</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>Fernando Giorgetti</copyright>
-    <lastBuildDate>Tue, 23 Aug 2022 00:21:47 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>File Watcher With Fsnotify</title>
-      <link>https://fgiorgetti.github.io/posts/20220823-file-watcher-with-fsnotify/</link>
-      <pubDate>Tue, 23 Aug 2022 00:21:47 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/posts/20220823-file-watcher-with-fsnotify/</guid>
-      <description>Sometimes we need to watch for modifications in specific locations in the filesystem, reacting to them differently.
+    <channel>
+        <title>Posts on Fernando Giorgetti - about me</title>
+        <link>https://fgiorgetti.github.io/posts/</link>
+        <description>Recent content in Posts on Fernando Giorgetti - about me</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <copyright>Fernando Giorgetti</copyright>
+        <lastBuildDate>Tue, 23 Aug 2022 00:21:47 -0300</lastBuildDate>
+        <atom:link href="https://fgiorgetti.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>File Watcher With Fsnotify</title>
+            <link>https://fgiorgetti.github.io/posts/20220823-file-watcher-with-fsnotify/</link>
+            <pubDate>Tue, 23 Aug 2022 00:21:47 -0300</pubDate>
+            
+            <guid>https://fgiorgetti.github.io/posts/20220823-file-watcher-with-fsnotify/</guid>
+            <description>Sometimes we need to watch for modifications in specific locations in the filesystem, reacting to them differently.
 As an example, an alert could be triggered if a specific file is modified or a backup procedure could start as new files are created into specific directories.
 There are several tools and libraries to help doing that, but since I am evaluating libraries in Go, I have decided to play with fsnotify and write a bit about it.</description>
-    </item>
-    
-    <item>
-      <title>Golang Bash Completion with Cobra API</title>
-      <link>https://fgiorgetti.github.io/posts/20210203-golang-bash-completion/</link>
-      <pubDate>Wed, 03 Feb 2021 17:15:08 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/posts/20210203-golang-bash-completion/</guid>
-      <description>In this post, I am going to share an example that demonstrates how to use bash completion with a Golang application that uses Cobra, a library to help writing Command Line Interface (CLI) apps.
+            <content type="html"><![CDATA[<p>Sometimes we need to watch for modifications in specific locations in
+the filesystem, reacting to them differently.</p>
+<p>As an example, an alert could be triggered if a specific file is modified
+or a backup procedure could start as new files are created into specific
+directories.</p>
+<p>There are several tools and libraries to help doing that, but since I am
+evaluating libraries in Go, I have decided to play with <a href="https://github.com/fsnotify/fsnotify">fsnotify</a> and write a bit about it.</p>
+<h2 id="fsnotify">fsnotify</h2>
+<p>It is a library written in Go that uses <a href="https://pkg.go.dev/golang.org/x/sys">https://pkg.go.dev/golang.org/x/sys</a> instead of
+<a href="https://pkg.go.dev/syscall">https://pkg.go.dev/syscall</a> (from the standard library).</p>
+<p>Fsnotify is supported on Linux, macOS, Windows and other operating systems.</p>
+<p>With fsnotify you can create a <code>Watcher</code> instance that will emit a notification <code>Event</code>
+for all files or directories (not recursively) added to it.</p>
+<h2 id="goal">Goal</h2>
+<p>Define a simple interface that provides a common mechanism for reacting to
+changes notified against a specific file or directory.</p>
+<p>Basically we will a pass specific location to be monitored by <code>fsnotify</code>.</p>
+<p>This location can be an existing file, directory or even a new location in
+the file system that may still not yet exist.</p>
+<h2 id="quick-start">Quick start</h2>
+<p>First thing we need to know is how to use the Watcher provided by fsnotify.
+Code must import <code>github.com/fsnotify/fsnotify</code> and create a <code>fsnotify.Watcher</code> instance.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">watcher</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fsnotify</span>.<span style="color:#a6e22e">NewWatcher</span>()
+</span></span></code></pre></div><p>After that you must add target files or directories to watch, like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">watcher</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">filename</span>)
+</span></span></code></pre></div><p>One important thing to mention here is that you must pass an existing file
+or directory to be watched.</p>
+<p>If you pass an invalid filename, fsnotify will report an error saying:
+&ldquo;<code>no such file or directory</code>&rdquo;.</p>
+<p>To get around that, our implementation will also validate if the given file
+or directory exists and otherwise it will try to add the named file to the
+Watcher instance till it returns no error.</p>
+<p>The notification events are sent to a channel named <code>Events</code> in the <code>Watcher</code>
+instance and it has a property named <code>Op</code> that represents a file operation.</p>
+<p>To validate the correct operation being notified you have to perform a bitwise
+<strong><code>&amp;</code></strong> (<strong>AND</strong>) operation against fsnotify generalized operations and validate
+that the result matches it. As an example, to validate if a given event notification
+refers to a new file or directory being created you can do:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">Op</span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">fsnotify</span>.<span style="color:#a6e22e">Create</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">fsnotify</span>.<span style="color:#a6e22e">Create</span>
+</span></span></code></pre></div><p>With that we know what are the basics to write our own interface that helps reacting
+to file system modifications more easily.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">FSChangeHandler</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">OnCreate</span>(<span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">OnUpdate</span>(<span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">OnRemove</span>(<span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We can customize how to react to certain events more easily and leave the communication
+with <code>fsnotify</code> to be handled by an internal component.</p>
+<p>In order to achieve that, the sample code will offer the following function:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewWatcher</span>(<span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">stopCh</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">bool</span>, <span style="color:#a6e22e">handler</span> <span style="color:#a6e22e">FSChangeHandler</span>) <span style="color:#66d9ef">error</span>
+</span></span></code></pre></div><p>Then you can use it as you need and simply provide multiple implementations to react
+to specific events differently.</p>
+<h2 id="solution">Solution</h2>
+<h3 id="watchergo">watcher.go</h3>
+<p>Here we have the NewWatcher function that uses watchCreated to wait for new file
+or directory to be created and it will use the <code>FSChangeHandler</code> interface to notify
+events accordignly.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">watcher</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;log&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;os&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;github.com/fsnotify/fsnotify&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">FSChangeHandler</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">OnCreate</span>(<span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">OnUpdate</span>(<span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">OnRemove</span>(<span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">watchCreated</span>(<span style="color:#a6e22e">watcher</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">fsnotify</span>.<span style="color:#a6e22e">Watcher</span>, <span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;-&gt; waiting for %s to exist&#34;</span>, <span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">ticker</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Tick</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">select</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ticker</span>:
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">watcher</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">name</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;-&gt; now it exists: %s&#34;</span>, <span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewWatcher</span>(<span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">stopCh</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">bool</span>, <span style="color:#a6e22e">handler</span> <span style="color:#a6e22e">FSChangeHandler</span>) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Creating watcher for: %s&#34;</span>, <span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">watcher</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fsnotify</span>.<span style="color:#a6e22e">NewWatcher</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stat</span>(<span style="color:#a6e22e">name</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">IsNotExist</span>(<span style="color:#a6e22e">err</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">watchCreated</span>(<span style="color:#a6e22e">watcher</span>, <span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">watcher</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">select</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">event</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">watcher</span>.<span style="color:#a6e22e">Events</span>:
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">switch</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#75715e">// useful for new files when watching directories
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">Op</span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">fsnotify</span>.<span style="color:#a6e22e">Create</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">fsnotify</span>.<span style="color:#a6e22e">Create</span>:
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">handler</span>.<span style="color:#a6e22e">OnCreate</span>(<span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">Name</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">Op</span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">fsnotify</span>.<span style="color:#a6e22e">Write</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">fsnotify</span>.<span style="color:#a6e22e">Write</span>:
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">handler</span>.<span style="color:#a6e22e">OnUpdate</span>(<span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">Name</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">Op</span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">fsnotify</span>.<span style="color:#a6e22e">Remove</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">fsnotify</span>.<span style="color:#a6e22e">Remove</span>:
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">handler</span>.<span style="color:#a6e22e">OnRemove</span>(<span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">Name</span>)
+</span></span><span style="display:flex;"><span>					<span style="color:#75715e">// object being watched removed, watch for it to show up again
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>					<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">Name</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">name</span> {
+</span></span><span style="display:flex;"><span>						<span style="color:#a6e22e">watcher</span>.<span style="color:#a6e22e">Remove</span>(<span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>						<span style="color:#a6e22e">watchCreated</span>(<span style="color:#a6e22e">watcher</span>, <span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>					}
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">stopCh</span>:
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Done watching: %s&#34;</span>, <span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">watcher</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="fwgo">fw.go</h3>
+<p>Here is a sample usage of the watcher presented earlier.
+It provides a <code>FSChangeHandler</code> implementation that simply displays
+the event type that has just been triggered and the filename.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;log&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;os&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;github.com/fgiorgetti/go-playground/filewatcher/pkg/watcher&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">MyHandler</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">m</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MyHandler</span>) <span style="color:#a6e22e">OnCreate</span>(<span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;File has been created: %s&#34;</span>, <span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">m</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MyHandler</span>) <span style="color:#a6e22e">OnUpdate</span>(<span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;File has been updated: %s&#34;</span>, <span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">m</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MyHandler</span>) <span style="color:#a6e22e">OnRemove</span>(<span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;File has been removed: %s&#34;</span>, <span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">stopCh</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">bool</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">2</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;Use: %s file_or_directory&#34;</span>, <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fileOrDir</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">watcher</span>.<span style="color:#a6e22e">NewWatcher</span>(<span style="color:#a6e22e">fileOrDir</span>, <span style="color:#a6e22e">stopCh</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">MyHandler</span>{})
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;Error creating watcher: %v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// var done string
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Press ENTER when done&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Scanln</span>()
+</span></span><span style="display:flex;"><span>	close(<span style="color:#a6e22e">stopCh</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="running">Running</h3>
+<p>To run it you must pass a single target file to be watched.
+Remember it may or may not exist.</p>
+<p>In a separate terminal you can play with modifications to the respective file.</p>
+<p>Once you&rsquo;re done with it, just press ENTER in the terminal where the watcher
+is running.</p>
+<p>Example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>go run fw.go /tmp/sample-location
+</span></span></code></pre></div><p>It will show you something like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>2022/08/23 12:26:52 Creating watcher <span style="color:#66d9ef">for</span>: /tmp/sample-location
+</span></span><span style="display:flex;"><span>2022/08/23 12:26:52 -&gt; waiting <span style="color:#66d9ef">for</span> /tmp/sample-location to exist
+</span></span><span style="display:flex;"><span>Press ENTER when <span style="color:#66d9ef">done</span>
+</span></span></code></pre></div><p>In another terminal you can create a file and add more content to it, like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;some data&#34;</span> &gt;&gt; /tmp/sample-location
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;some more data&#34;</span> &gt;&gt; /tmp/sample-location
+</span></span></code></pre></div><p>Then in the main terminal you will see:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>2022/08/23 12:27:07 -&gt; now it exists: /tmp/sample-location
+</span></span><span style="display:flex;"><span>2022/08/23 12:28:40 File has been updated: /tmp/sample-location
+</span></span></code></pre></div><p>Remove the file now:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rm /tmp/sample-location
+</span></span></code></pre></div><p>And in the main terminal you should see:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>2022/08/23 12:29:56 File has been removed: /tmp/sample-location
+</span></span><span style="display:flex;"><span>2022/08/23 12:29:56 -&gt; waiting <span style="color:#66d9ef">for</span> /tmp/sample-location to exist
+</span></span></code></pre></div><p>Next, create the target <code>/tmp/sample-location</code> as a directory and
+create a file inside it with some sample content:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mkdir /tmp/sample-location
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;some data&#34;</span> &gt;&gt; /tmp/sample-location/file1
+</span></span></code></pre></div><p>You should see:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>2022/08/23 12:31:18 -&gt; now it exists: /tmp/sample-location
+</span></span><span style="display:flex;"><span>2022/08/23 12:31:40 File has been created: /tmp/sample-location/file1
+</span></span><span style="display:flex;"><span>2022/08/23 12:31:40 File has been updated: /tmp/sample-location/file1
+</span></span></code></pre></div><p>I hope you find it useful.</p>
+<h2 id="system-information">System information</h2>
+<p>FSNotify v1.5.4
+OS: Fedora 36
+Go: 1.19</p>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://github.com/fsnotify/fsnotify/tree/v1.5.4">fsnotify source code</a></li>
+<li><a href="https://pkg.go.dev/github.com/fsnotify/fsnotify">fsnotify documentation</a></li>
+<li><a href="https://github.com/fgiorgetti/go-playground/tree/main/filewatcher">source code used here</a></li>
+</ul>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Golang Bash Completion with Cobra API</title>
+            <link>https://fgiorgetti.github.io/posts/20210203-golang-bash-completion/</link>
+            <pubDate>Wed, 03 Feb 2021 17:15:08 -0300</pubDate>
+            
+            <guid>https://fgiorgetti.github.io/posts/20210203-golang-bash-completion/</guid>
+            <description>In this post, I am going to share an example that demonstrates how to use bash completion with a Golang application that uses Cobra, a library to help writing Command Line Interface (CLI) apps.
 Source repository You can find the sources mentioned in this example at the following Git Repository.
 Pre-requisites You must have the following packages (assuming you&amp;rsquo;re on Linux) and commands available:
 go (1.15+) bash bash-completion base64 make The example application The code in the repository above demonstrates a very basic (and, let&amp;rsquo;s say, not so useful) application called bashcomp that handles the following commands:</description>
-    </item>
-    
-    <item>
-      <title>Maintaining your Skupper Virtual Application Network with Gitops</title>
-      <link>https://fgiorgetti.github.io/posts/20210129-skupper-and-gitops/</link>
-      <pubDate>Fri, 29 Jan 2021 18:27:23 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/posts/20210129-skupper-and-gitops/</guid>
-      <description>Hybrid Cloud using Skupper Skupper enables service communication, transparently, across multiple Kubernetes clusters.
+            <content type="html"><![CDATA[<p>In this post, I am going to share an example that demonstrates how to use bash completion with a Golang
+application that uses <a href="https://github.com/spf13/cobra">Cobra</a>, a library to help writing Command Line Interface (CLI) apps.</p>
+<h2 id="source-repository">Source repository</h2>
+<p>You can find the sources mentioned in this example at the following <a href="https://github.com/fgiorgetti/go-playground/tree/main/bashcomp">Git Repository</a>.</p>
+<h2 id="pre-requisites">Pre-requisites</h2>
+<p>You must have the following packages (assuming you&rsquo;re on Linux) and
+commands available:</p>
+<ul>
+<li>go (1.15+)</li>
+<li>bash</li>
+<li>bash-completion</li>
+<li>base64</li>
+<li>make</li>
+</ul>
+<h2 id="the-example-application">The example application</h2>
+<p>The code in the repository above demonstrates a very basic (and, let&rsquo;s say, not so useful) application
+called <code>bashcomp</code> that handles the following commands:</p>
+<h3 id="hello">hello</h3>
+<pre tabindex="0"><code>$ bashcomp hello Bash
+Hello my dear Bash
+</code></pre><h3 id="goodbye">goodbye</h3>
+<pre tabindex="0"><code>$ bashcomp goodbye Bash
+Goodbye fellow Bash
+</code></pre><h3 id="thanks">thanks</h3>
+<pre tabindex="0"><code>$ bashcomp thanks to Bash
+Thank you very much fellow Bash!
+
+$ bashcomp thanks from Bash
+Bash says Thank you!
+</code></pre><h3 id="completion">completion</h3>
+<pre tabindex="0"><code>$ bashcomp completion
+...
+... it will output a shell script you can save as a local file ...
+...
+</code></pre><h2 id="autocomplete-function">Autocomplete function</h2>
+<p>In order to make it easier to maintain the auto compete function, I have decided to keep it
+in a separate script named <code>bash_completion.sh</code>.</p>
+<p>This script offers completion support for the main options: <code>hello</code>, <code>goodbye</code>, <code>thanks</code> and <code>completion</code>.
+In case you choose <code>thanks</code>, its allowed arguments will be offered, which are: <code>to</code> and <code>from</code>.</p>
+<h2 id="how-does-it-get-bound-to-the-bashcomp-application">How does it get bound to the bashcomp application</h2>
+<p>If you look at the <code>Makefile</code> file in the Git Repository link above, you can see
+that I am associating the content of <code>bash_completion.sh</code> encoded as Base 64 with
+<code>main.BashCompletionEncoded</code> variable that is defined at <code>bashcomp.go</code>. It all
+happens at build time.</p>
+<p>Why doing so? Because this way you can ship just your <code>bashcomp</code> binary file, and it
+will be capable of generating the autocomplete shell script without the need to refer
+to an external file or location.</p>
+<h2 id="validating-autocomplete-in-action">Validating autocomplete in action</h2>
+<ul>
+<li>Let&rsquo;s clone the repository first</li>
+</ul>
+<pre tabindex="0"><code class="language-bigquery" data-lang="bigquery">$ git clone https://github.com/fgiorgetti/go-playground.git
+$ cd go-playground/bashcomp
+</code></pre><ul>
+<li>Now build the application</li>
+</ul>
+<pre tabindex="0"><code class="language-bigquery" data-lang="bigquery">$ make
+go build -ldflags &#34;-X main.BashCompletionEncoded=`cat bash_completion.sh | base64 -w 0`&#34; -o bashcomp bashcomp.go
+./bashcomp completion &gt; bashcomp.bash.inc
+
+Now you must run: source bashcomp.bash.inc
+
+... and make sure you have &#39;bashcomp&#39; binary in your PATH
+</code></pre><p>After <code>make</code> completes, you will find a <code>bashcomp</code> binary file as well as a
+shell script named <code>bashcomp.bash.inc</code> (produced by <code>make</code>, which executed: <code>$ bashcomp completion</code>).</p>
+<ul>
+<li>Install <code>bashcomp</code> to your PATH</li>
+</ul>
+<p>I am installing it to my local <code>${HOME}/bin</code> directory, which is defined as part
+of my <code>PATH</code>. If you use a different location, feel free to adjust the next command accordingly.</p>
+<pre tabindex="0"><code class="language-bigquery" data-lang="bigquery">$ install bashcomp ${HOME}/bin
+</code></pre><ul>
+<li>Sourcing the autocomplete script</li>
+</ul>
+<p>Before autocomplete works in your <code>bash</code> session, you must source
+the generated completion script by running:</p>
+<pre tabindex="0"><code class="language-bigquery" data-lang="bigquery">$ source bashcomp.bash.inc
+</code></pre><p>From now on, auto completion should work whenever you type:</p>
+<p><code>bashcomp &lt;tab&gt;&lt;tab&gt;</code></p>
+<p>or even</p>
+<p><code>bashcomp thanks &lt;tab&gt;&lt;tab&gt;</code></p>
+<p>That&rsquo;s all!</p>
+<p>I hope you enjoyed and may have learned something interesting.</p>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Maintaining your Skupper Virtual Application Network with Gitops</title>
+            <link>https://fgiorgetti.github.io/posts/20210129-skupper-and-gitops/</link>
+            <pubDate>Fri, 29 Jan 2021 18:27:23 -0300</pubDate>
+            
+            <guid>https://fgiorgetti.github.io/posts/20210129-skupper-and-gitops/</guid>
+            <description>Hybrid Cloud using Skupper Skupper enables service communication, transparently, across multiple Kubernetes clusters.
 For more information about Skupper, as well as documentation and great examples, please visit https://skupper.io/.
 This article demonstrates how to setup and maintain a Virtual Application Network (VAN) using Skupper.
 The standard documented approach for setting up a Skupper network, is through the use of its Command Line Interface (CLI) tool named skupper.
 Following its documentation and some examples, you will connect your cloud applications through a set of imperative commands that will help you setting everything up.</description>
-    </item>
-    
-  </channel>
+            <content type="html"><![CDATA[<h2 id="hybrid-cloud-using-skupper">Hybrid Cloud using Skupper</h2>
+<p>Skupper enables service communication, transparently,
+across multiple Kubernetes clusters.</p>
+<p>For more information about Skupper, as well as documentation and
+great examples, please visit <a href="https://skupper.io/">https://skupper.io/</a>.</p>
+<p>This article demonstrates how to setup and maintain a
+Virtual Application Network (VAN) using Skupper.</p>
+<p>The standard documented approach for setting up a Skupper network, is
+through the use of its Command Line Interface (CLI) tool named <code>skupper</code>.</p>
+<p>Following its documentation and some examples, you will connect your
+cloud applications through a set of imperative commands that will help you
+setting everything up.</p>
+<p>This approach works just fine. But imagine if you have a set of services
+to be exposed and you have multiple sites to maintain.</p>
+<p>Your exposed services may need to change from time to time and/or you might
+need to recover one of your sites if something goes wrong. To keep everything
+in shape, you will need to execute multiple commands or write a set of scripts
+so your environment is always at the expected state, and this is not a trivial
+thing to achieve.</p>
+<p>Skupper provides a <a href="https://skupper.io/start/index.html">Getting started</a> which shows how to connect two clusters using
+the CLI. They also document connecting two clusters in Configuring Skupper sites using YAML.</p>
+<p>In order to keep this tutorial simple, we will connect two namespaces in the same cluster while showing you how to use Argo CD.</p>
+<h2 id="gitops-using-argo-cd">GitOps using Argo CD</h2>
+<p>The goal here is to demonstrate how you can setup a GitOps operator in your
+cluster, so that all your distribute application, as well as your Virtual Application Network
+can always be up to date with your desired state, or a single source of truth.</p>
+<p>Argo CD helps you maintaining the state of your Kubernetes resources in sync
+with a Git Repository (your source of truth).</p>
+<p>Therefore all you need to do is keep your resources updated in your repository,
+adjusting them as needed, and Argo CD will guarantee your cluster has always
+the latest version you have defined.</p>
+<p>In this tutorial, I am using a personal git repository. If you want to make changes to the resources used in this
+example to observe Argo CD syncing it with your cluster, feel free to fork the <a href="https://github.com/fgiorgetti/skupper-example-hello-world.git">sample repository</a> (branch: <strong>gitops</strong>) and update
+the GIT url used in the upcoming sections.</p>
+<h2 id="setting-up-a-local-cluster">Setting up a local cluster</h2>
+<p>If you don&rsquo;t yet have a running cluster, you can follow the steps below to
+download and run a local Minikube cluster in your machine.</p>
+<p><a href="https://minikube.sigs.k8s.io/docs/start/">Minikube installation instructions</a>.</p>
+<h2 id="installing-your-gitops-operator">Installing your GitOps Operator</h2>
+<p>The instructions below have been copied from the <a href="https://argoproj.github.io/argo-cd/getting_started/">Argo CD Getting Started Guide</a>.</p>
+<ol>
+<li>Create a namespace for the Argo CD operator</li>
+</ol>
+<pre tabindex="0"><code>kubectl create namespace argocd
+</code></pre><ol start="2">
+<li>Install Argo CD from Installation YAML</li>
+</ol>
+<pre tabindex="0"><code>kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+</code></pre><ol start="3">
+<li>Install the <code>argocd</code> CLI</li>
+</ol>
+<p>Download the latest version of Argo CD CLI. Visit <a href="https://github.com/argoproj/argo-cd/releases/latest">https://github.com/argoproj/argo-cd/releases/latest</a>
+and download the binary for your operating system.</p>
+<ol start="4">
+<li>Expose your Argo CD Server locally</li>
+</ol>
+<p>There are multiple ways you can use to get access to your Argo CD GUI, but
+in order to keep this guide simple, we are going to create a port-forward
+directly to the argocd-server service.</p>
+<pre tabindex="0"><code>kubectl port-forward svc/argocd-server -n argocd 8080:443
+</code></pre><p>Now you can access your API by using: <code>localhost:8080</code>.</p>
+<p>You will see a page like:
+<img src="/images/20210129-argocd-login.png" alt=""></p>
+<ol start="5">
+<li>
+<p>Logging in using your CLI</p>
+<p>5.1. First we need to retrieve the generated password. To do so, run:</p>
+<pre tabindex="0"><code>$ kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d&#39;/&#39; -f 2
+</code></pre><p>The returned output is the initial password. Please save it temporarily.</p>
+<p>5.2. Login using argocd</p>
+<pre tabindex="0"><code>$ argocd login localhost:8080
+WARNING: server certificate had error: x509: certificate signed by unknown authority. Proceed insecurely (y/n)? y
+Username: admin
+Password:
+&#39;admin&#39; logged in successfully
+Context &#39;localhost:8080&#39; updated
+</code></pre><p>5.3. Update admin&rsquo;s password</p>
+<pre tabindex="0"><code>$ argocd account update-password
+*** Enter current password:
+*** Enter new password:
+*** Confirm new password:
+Password updated
+Context &#39;localhost:8080&#39; updated
+</code></pre></li>
+<li>
+<p>Creating an application from a Git Repository</p>
+</li>
+</ol>
+<p>The application we are going to deploy, in order to demonstrate how GitOps works
+as well as how Skupper helps you, is a tiny HTTP application that runs across
+two Kubernetes clusters (or in this demonstration, against two Kubernetes namespaces).</p>
+<p>This <a href="https://github.com/skupperproject/skupper-example-hello-world">Hello World HTTP application</a> is part
+of the <a href="https://skupper.io/examples/">Skupper&rsquo;s Examples WebSite</a>.</p>
+<p>It is composed by a Backend and a Frontend service. We are going to deploy each component to a different
+namespace in our Kubernetes cluster.</p>
+<p><img src="https://github.com/skupperproject/skupper-example-hello-world/raw/master/images/entities.svg" alt=""></p>
+<p>Once we have these two components running, they will not be able to communicate. The goal, at this point,
+is just to make sure both components are running isolatedly on their own namespaces.</p>
+<h2 id="argo-cd-applications">Argo CD applications</h2>
+<p>An Argo CD application defines the <code>source</code> (Git Repository and path) and the <code>destination</code> (A Kubernetes cluster / namespace).
+Basically Argo CD will try to keep the resources you have defined at your <code>source</code> synchronized with your <code>destination</code>.</p>
+<p>There are multiple ways to define an Argo CD application. For example:</p>
+<ul>
+<li>Using the <code>argocd</code> CLI</li>
+<li>Defining an <code>Application</code> custom resource (apiVersion <code>argoproj.io/v1alpha1</code>), that is managed by Argo CD</li>
+<li>Or using the Argo CD GUI (Console)</li>
+</ul>
+<p>To keep things simple, we are going to use the <strong>Argo CD GUI</strong> to create the GitOps applications.</p>
+<p><em><strong>Important:</strong> In a real environment, you might consider defining an &ldquo;App of apps&rdquo;. For more information please visit <a href="https://argoproj.github.io/argo-cd/operator-manual/cluster-bootstrapping/#app-of-apps-pattern">https://argoproj.github.io/argo-cd/operator-manual/cluster-bootstrapping/#app-of-apps-pattern</a></em>**</p>
+<h2 id="creating-an-argo-cd-application-to-the-frontend-service">Creating an Argo CD application to the Frontend service</h2>
+<p>The Frontend service application is defined at this <a href="https://github.com/fgiorgetti/skupper-example-hello-world/tree/gitops">particular GIT Repository</a>
+at the <strong><code>gitops</code></strong> branch.</p>
+<p>Go the the repository and explore the contents of <strong><code>/gitops/gitops/west/frontend</code></strong> directory.</p>
+<p>The application itself is a simple HTTP application that attempts to invoke a hello world
+API that is supposed to run at the east namespace.</p>
+<p>To create it in Argo CD, follow these steps:</p>
+<ol>
+<li>
+<p>At the Argo CD console, click &ldquo;+ NEW APP&rdquo;</p>
+<p><img src="/images/20210129-new-app.png" alt=""></p>
+</li>
+<li>
+<p>Enter the new application information:</p>
+<ol>
+<li>General:
+<ol>
+<li>Application Name: <strong>hello-world-frontend</strong></li>
+<li>Project: <strong>default</strong></li>
+<li>Sync Policy: <strong>Automatic</strong></li>
+<li>Sync Options:
+<ol>
+<li>Check <strong>Auto-create Namespace</strong></li>
+</ol>
+</li>
+</ol>
+</li>
+<li>Source:
+<ol>
+<li>Repository URL: <strong><a href="https://github.com/fgiorgetti/skupper-example-hello-world.git">https://github.com/fgiorgetti/skupper-example-hello-world.git</a></strong></li>
+<li>Revision: <strong>gitops</strong></li>
+<li>Path: <strong>gitops/west/frontend/</strong></li>
+</ol>
+</li>
+<li>Destination:
+<ol>
+<li>Cluster URL: <strong><a href="https://kubernetes.default.svc">https://kubernetes.default.svc</a></strong></li>
+<li>Namespace: <strong>west</strong></li>
+</ol>
+</li>
+</ol>
+</li>
+<li>
+<p>Click <code>CREATE</code>.</p>
+</li>
+</ol>
+<h2 id="creating-an-argo-cd-application-to-the-backend-service">Creating an Argo CD application to the Backend service</h2>
+<p>The Backend service application is defined at this <a href="https://github.com/fgiorgetti/skupper-example-hello-world/tree/gitops">particular GIT Repository</a>
+at the <strong><code>gitops</code></strong> branch.</p>
+<p>Go the the repository and explore the contents of <strong><code>/gitops/gitops/east/backend</code></strong> directory.</p>
+<p>This backend application provides a <strong><code>/api/hello</code></strong> endpoint that will be invoked by
+the frontend application running at the <code>west</code> namespace.</p>
+<h3 id="understanding-what-is-being-deployed">Understanding what is being deployed</h3>
+<p>Inspect the deployment descriptor for the <code>hello-world-backend</code> application that
+is going to be deployed to the <code>east</code> namespace.</p>
+<p><a href="https://github.com/fgiorgetti/skupper-example-hello-world/blob/0388bee7b89ba01402bc0edddcd99ec531b3a4e0/gitops/east/backend/01-deployment.yaml#L7-L9">/gitops/east/backend/01-deployment.yaml</a></p>
+<p>Note that is contains two annotations:</p>
+<pre tabindex="0"><code>    skupper.io/port: &#34;8080&#34;
+    skupper.io/proxy: &#34;http&#34;
+</code></pre><p>The first one <code>skupper.io/port</code> defines the port of the deployment to be exposed
+and the second one <code>skupper.io/proxy</code> defines the protocol of the service being
+exposed.</p>
+<p>This is what you need to add to the resource you want to expose, so when Skupper
+is initialized in your namespace, it will create the respective service accordingly.
+The new service will be replicated to other sites automatically.</p>
+<p>To create it in Argo CD, follow these steps:</p>
+<ol>
+<li>Back to the Argo CD console, click &ldquo;+ NEW APP&rdquo; again</li>
+<li>Enter the new application information:
+<ol>
+<li>General:
+<ol>
+<li>Application Name: <strong>hello-world-backend</strong></li>
+<li>Project: <strong>default</strong></li>
+<li>Sync Policy: <strong>Automatic</strong></li>
+<li>Sync Options:
+<ol>
+<li>Check <strong>Auto-create Namespace</strong></li>
+</ol>
+</li>
+</ol>
+</li>
+<li>Source:
+<ol>
+<li>Repository URL: <strong><a href="https://github.com/fgiorgetti/skupper-example-hello-world.git">https://github.com/fgiorgetti/skupper-example-hello-world.git</a></strong></li>
+<li>Revision: <strong>gitops</strong></li>
+<li>Path: <strong>gitops/east/backend/</strong></li>
+</ol>
+</li>
+<li>Destination:
+<ol>
+<li>Cluster URL: <strong><a href="https://kubernetes.default.svc">https://kubernetes.default.svc</a></strong></li>
+<li>Namespace: <strong>east</strong></li>
+</ol>
+</li>
+</ol>
+</li>
+<li>Click <code>CREATE</code>.</li>
+</ol>
+<h2 id="validate-applications-are-running">Validate applications are running</h2>
+<p>Verify the artifacts that have been created on both namespaces.</p>
+<pre tabindex="0"><code>$ kubectl -n west get all
+NAME                                        READY   STATUS    RESTARTS   AGE
+pod/hello-world-frontend-55c84976c7-c6mq5   1/1     Running   0          31m
+
+NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/hello-world-frontend   1/1     1            1           31m
+
+NAME                                              DESIRED   CURRENT   READY   AGE
+replicaset.apps/hello-world-frontend-55c84976c7   1         1         1       31m
+</code></pre><pre tabindex="0"><code>$ kubectl -n east get all
+NAME                                      READY   STATUS    RESTARTS   AGE
+pod/hello-world-backend-d8cf49cb7-h5vd4   1/1     Running   0          21m
+
+NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/hello-world-backend   1/1     1            1           21m
+
+NAME                                            DESIRED   CURRENT   READY   AGE
+replicaset.apps/hello-world-backend-d8cf49cb7   1         1         1       21m
+</code></pre><p>At this point both the Frontend and Backend applications are running inside your
+cluster and in different namespaces. But as said earlier, they cannot communicate
+with each other.</p>
+<p>Let&rsquo;s try to create another port-forward to the frontend service, so we can verify
+it is up, but failing because it cannot reach the <code>backend</code> service.</p>
+<pre tabindex="0"><code>$ kubectl -n west port-forward deployment/hello-world-frontend  8081:8080
+</code></pre><p>Try opening your browser and access: <code>http://localhost:8081</code>.</p>
+<p>You should see an error like:</p>
+<pre tabindex="0"><code>Trouble! HTTPConnectionPool(host=&#39;hello-world-backend&#39;, port=8080): Max retries exceeded with url: /api/hello (Caused by NewConnectionError(&#39;&lt;urllib3.connection.HTTPConnection object at 0x7f0d059d7dd0&gt;: Failed to establish a new connection: [Errno -2] Name or service not known&#39;))
+</code></pre><p>The error above is an expected error, since both namespaces do not communicate&hellip; yet.</p>
+<h2 id="declaring-a-skupper-network-in-your-git-repository">Declaring a Skupper network in your git repository</h2>
+<p>First thing to do is ensure that we have Skupper running on both namespaces.
+To do that, lets define another two Argo CD applications (one for each namespace).</p>
+<h3 id="creating-a-skupper-site-on-the-west-namespace">Creating a Skupper site on the west namespace</h3>
+<ol>
+<li>At the Argo CD console, click &ldquo;+ NEW APP&rdquo;</li>
+<li>Enter the new application information:
+<ol>
+<li>General:
+<ol>
+<li>Application Name: <strong>skupper-west</strong></li>
+<li>Project: <strong>default</strong></li>
+<li>Sync Policy: <strong>Automatic</strong></li>
+<li>Sync Options:
+<ol>
+<li>Check <strong>Auto-create Namespace</strong></li>
+</ol>
+</li>
+</ol>
+</li>
+<li>Source:
+<ol>
+<li>Repository URL: <strong><a href="https://github.com/fgiorgetti/skupper-example-hello-world.git">https://github.com/fgiorgetti/skupper-example-hello-world.git</a></strong></li>
+<li>Revision: <strong>gitops</strong></li>
+<li>Path: <strong>gitops/west/skupper/</strong></li>
+</ol>
+</li>
+<li>Destination:
+<ol>
+<li>Cluster URL: <strong><a href="https://kubernetes.default.svc">https://kubernetes.default.svc</a></strong></li>
+<li>Namespace: <strong>west</strong></li>
+</ol>
+</li>
+</ol>
+</li>
+<li>Click <code>CREATE</code>.</li>
+</ol>
+<h3 id="creating-a-skupper-site-on-the-east-namespace">Creating a Skupper site on the east namespace</h3>
+<ol>
+<li>Back to the Argo CD console, click &ldquo;+ NEW APP&rdquo;</li>
+<li>Enter the new application information:
+<ol>
+<li>General:
+<ol>
+<li>Application Name: <strong>skupper-east</strong></li>
+<li>Project: <strong>default</strong></li>
+<li>Sync Policy: <strong>Automatic</strong></li>
+<li>Sync Options:
+<ol>
+<li>Check <strong>Auto-create Namespace</strong></li>
+</ol>
+</li>
+</ol>
+</li>
+<li>Source:
+<ol>
+<li>Repository URL: <strong><a href="https://github.com/fgiorgetti/skupper-example-hello-world.git">https://github.com/fgiorgetti/skupper-example-hello-world.git</a></strong></li>
+<li>Revision: <strong>gitops</strong></li>
+<li>Path: <strong>gitops/east/skupper/</strong></li>
+</ol>
+</li>
+<li>Destination:
+<ol>
+<li>Cluster URL: <strong><a href="https://kubernetes.default.svc">https://kubernetes.default.svc</a></strong></li>
+<li>Namespace: <strong>east</strong></li>
+</ol>
+</li>
+</ol>
+</li>
+<li>Click <code>CREATE</code>.</li>
+</ol>
+<h3 id="verifying-the-skupper-network">Verifying the Skupper network</h3>
+<p>Let&rsquo;s verify Skupper is running properly in your namespaces. But first, you might need to
+download the <code>skupper</code> tool. Please visit the <a href="https://github.com/skupperproject/skupper/releases">Skupper releases page</a>
+and download the client for your operating system.</p>
+<p><em>Make sure to install it as <code>skupper</code> and make sure it is available in your PATH.</em></p>
+<h4 id="validating-pods">Validating pods</h4>
+<pre tabindex="0"><code>$ kubectl -n west get pods
+NAME                                         READY   STATUS    RESTARTS   AGE
+hello-world-frontend-55c84976c7-c6mq5        1/1     Running   0          91m
+skupper-router-79b9db88bb-r42cf              1/1     Running   0          19m
+skupper-service-controller-b894b6554-gt64t   1/1     Running   0          19m
+skupper-site-controller-fc56c7686-wtwwp      1/1     Running   0          19m
+</code></pre><h4 id="validating-skupper-status">Validating skupper status</h4>
+<pre tabindex="0"><code>$ skupper -n west status
+Skupper is enabled for namespace &#34;west&#34; with site name &#34;skupper-west&#34; in interior mode. It is not connected to any other sites. It has no exposed services.
+</code></pre><p><em>Repeat the same validation using the <strong>east</strong> namespace.</em></p>
+<h3 id="creating-a-connection-token-to-the-west-namespace">Creating a connection token to the west namespace</h3>
+<p>Next we need to create our Virtual Application Network (VAN) using Skupper
+to allow communication with exposed services from all namespaces.</p>
+<p>To do that, we must use the <code>skupper</code> tool to generate a connection token to
+the <code>west</code> namespace.</p>
+<pre tabindex="0"><code>$ skupper -n west token create /tmp/west.token.yaml
+</code></pre><p>This token allows you to connect another site to Skupper running at the <code>west</code>
+namespace. So it must be stored carefully.</p>
+<p>In this demo, we are not storing tokens in our Git Repository, but if you plan
+to do so, make sure you are using <code>git crypt</code> to avoid exposing your certificates.</p>
+<h3 id="connecting-east-namespace-to-the-west-namespace">Connecting east namespace to the west namespace</h3>
+<p>As said above, we do not have the token in our sample Git Repository, so we must
+manually connect the <code>east</code> namespace to the <code>west</code> namespace.</p>
+<p>To do that, run:</p>
+<pre tabindex="0"><code>$ skupper -n east link create /tmp/west.token.yaml
+</code></pre><h3 id="verify-skupper-network-is-connected">Verify Skupper network is connected</h3>
+<p>After you have linked the two sites, you can monitor your network to ensure Skupper
+network is connected. Run:</p>
+<ul>
+<li>From <code>west</code> namespace</li>
+</ul>
+<pre tabindex="0"><code>$ skupper -n west status
+Skupper is enabled for namespace &#34;west&#34; with site name &#34;skupper-west&#34; in interior mode. It is connected to 1 other site. It has 1 exposed service.
+</code></pre><ul>
+<li>From <code>east</code> namespace</li>
+</ul>
+<pre tabindex="0"><code>$ skupper -n east status
+Skupper is enabled for namespace &#34;east&#34; with site name &#34;skupper-east&#34; in interior mode. It is connected to 1 other site. It has 1 exposed service.
+</code></pre><p>Now our Virtual Application Network is connected and the <code>hello-world-backend</code> deployment
+has been exposed as a service and it is available on both namespaces.</p>
+<h2 id="testing-the-frontend-application">Testing the frontend application</h2>
+<p>To test the frontend application, lets run the port-forward to the <code>hello-world-frontend</code> deployment
+one more time.</p>
+<pre tabindex="0"><code>kubectl -n west port-forward deployment/hello-world-frontend 8081:8080
+</code></pre><p>Now open your Browser and type: <code>http://localhost:8081</code>.
+You should see a message like:</p>
+<pre tabindex="0"><code>I am the frontend.  The backend says &#39;Hello from hello-world-backend-d8cf49cb7-h5vd4 (1)&#39;.
+</code></pre><p>Success! Now the Frontend application running at the <code>west</code> namespace can reach out
+to the Backend application running at the <code>east</code> namespace through Skupper&rsquo;s exposed
+service <code>hello-world-backend</code>.</p>
+<p>I hope you might find this useful to help you setting up your GitOps operator and Skupper.</p>
+]]></content>
+        </item>
+        
+    </channel>
 </rss>

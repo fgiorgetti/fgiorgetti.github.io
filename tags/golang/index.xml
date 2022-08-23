@@ -17,7 +17,7 @@
       <description>In this post, I am going to share an example that demonstrates how to use bash completion with a Golang application that uses Cobra, a library to help writing Command Line Interface (CLI) apps.
 Source repository You can find the sources mentioned in this example at the following Git Repository.
 Pre-requisites You must have the following packages (assuming you&amp;rsquo;re on Linux) and commands available:
- go (1.15+) bash bash-completion base64 make  The example application The code in the repository above demonstrates a very basic (and, let&amp;rsquo;s say, not so useful) application called bashcomp that handles the following commands:</description>
+go (1.15+) bash bash-completion base64 make The example application The code in the repository above demonstrates a very basic (and, let&amp;rsquo;s say, not so useful) application called bashcomp that handles the following commands:</description>
     </item>
     
   </channel>

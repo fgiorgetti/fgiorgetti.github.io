@@ -1,9 +1,16 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <script type="text/javascript" src="https://latest.cactus.chat/cactus.js"></script>
+  <link rel="stylesheet" href="https://latest.cactus.chat/style.css" type="text/css">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title> Maintaining your Skupper Virtual Application Network with Gitops | Fernando Giorgetti - about me</title>
+  <link rel = 'canonical' href = 'https://fgiorgetti.github.io/posts/20210129-skupper-and-gitops/'>
   <meta name="description" content="Software Engineer and Open source passionate user.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="all,follow">
@@ -15,9 +22,10 @@ This article demonstrates how to setup and maintain a Virtual Application Networ
 The standard documented approach for setting up a Skupper network, is through the use of its Command Line Interface (CLI) tool named skupper.
 Following its documentation and some examples, you will connect your cloud applications through a set of imperative commands that will help you setting everything up." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://fgiorgetti.github.io/posts/20210129-skupper-and-gitops/" />
+<meta property="og:url" content="https://fgiorgetti.github.io/posts/20210129-skupper-and-gitops/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-01-29T18:27:23-03:00" />
 <meta property="article:modified_time" content="2021-01-29T18:27:23-03:00" />
+
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Maintaining your Skupper Virtual Application Network with Gitops"/>
@@ -32,7 +40,10 @@ Following its documentation and some examples, you will connect your cloud appli
     
   
   
-  <link rel="stylesheet" href="https://fgiorgetti.github.io/css/style-dark.css">
+  <link rel="stylesheet" href="https://fgiorgetti.github.io/css/styles.94f653e9e151e28067a7c5dbbc4600cbd5a3c721e79faaf971e523c40f3b249b8e4f20bb57810dfffa8d559ca5c140fd56eb4cd9c0853113ad08e66afdb08bdd.css" integrity="sha512-lPZT6eFR4oBnp8XbvEYAy9WjxyHnn6r5ceUjxA87JJuOTyC7V4EN//qNVZylwUD9VutM2cCFMROtCOZq/bCL3Q=="> 
+
+  
+  
   
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -46,14 +57,16 @@ Following its documentation and some examples, you will connect your cloud appli
   
   
   
+  
 </head>
+
 <body class="max-width mx-auto px3 ltr">
   <div class="content index py4">
 
   <div id="header-post">
   <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
   <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;" aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
   <span id="menu">
     <span id="nav">
       <ul>
@@ -72,18 +85,18 @@ Following its documentation and some examples, you will connect your cloud appli
         
         
         <li>
-          <a class="icon" href="https://fgiorgetti.github.io/posts/20210203-golang-bash-completion/">
+          <a class="icon" href="https://fgiorgetti.github.io/posts/20210203-golang-bash-completion/" aria-label="Next">
             <i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i>
           </a>
         </li>
         
         <li>
-          <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');">
+          <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
             <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i>
           </a>
         </li>
         <li>
-          <a class="icon" href="#">
+          <a class="icon" href="#" aria-label="Share">
             <i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i>
           </a>
         </li>
@@ -103,63 +116,54 @@ Following its documentation and some examples, you will connect your cloud appli
   
   
   <li>
-    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f">
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f" aria-label="Facebook">
       <i class="fab fa-facebook " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&text=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops">
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&text=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops" aria-label="Twitter">
       <i class="fab fa-twitter " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&title=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops">
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&title=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops" aria-label="Linkedin">
       <i class="fab fa-linkedin " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&is_video=false&description=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops">
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&is_video=false&description=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops" aria-label="Pinterest">
       <i class="fab fa-pinterest " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="mailto:?subject=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops&body=Check out this article: https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f">
+    <a class="icon" href="mailto:?subject=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops&body=Check out this article: https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f" aria-label="Email">
       <i class="fas fa-envelope " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&title=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops">
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&title=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops" aria-label="Pocket">
       <i class="fab fa-get-pocket " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&title=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops">
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&title=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops" aria-label="reddit">
       <i class="fab fa-reddit " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.stumbleupon.com/submit?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&title=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops">
-      <i class="fab fa-stumbleupon " aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="http://digg.com/submit?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&title=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops">
-      <i class="fab fa-digg " aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&name=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops&description=Hybrid%20Cloud%20using%20Skupper%20Skupper%20enables%20service%20communication%2c%20transparently%2c%20across%20multiple%20Kubernetes%20clusters.%0aFor%20more%20information%20about%20Skupper%2c%20as%20well%20as%20documentation%20and%20great%20examples%2c%20please%20visit%20https%3a%2f%2fskupper.io%2f.%0aThis%20article%20demonstrates%20how%20to%20setup%20and%20maintain%20a%20Virtual%20Application%20Network%20%28VAN%29%20using%20Skupper.%0aThe%20standard%20documented%20approach%20for%20setting%20up%20a%20Skupper%20network%2c%20is%20through%20the%20use%20of%20its%20Command%20Line%20Interface%20%28CLI%29%20tool%20named%20skupper.%0aFollowing%20its%20documentation%20and%20some%20examples%2c%20you%20will%20connect%20your%20cloud%20applications%20through%20a%20set%20of%20imperative%20commands%20that%20will%20help%20you%20setting%20everything%20up.">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&name=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops&description=Hybrid%20Cloud%20using%20Skupper%20Skupper%20enables%20service%20communication%2c%20transparently%2c%20across%20multiple%20Kubernetes%20clusters.%0aFor%20more%20information%20about%20Skupper%2c%20as%20well%20as%20documentation%20and%20great%20examples%2c%20please%20visit%20https%3a%2f%2fskupper.io%2f.%0aThis%20article%20demonstrates%20how%20to%20setup%20and%20maintain%20a%20Virtual%20Application%20Network%20%28VAN%29%20using%20Skupper.%0aThe%20standard%20documented%20approach%20for%20setting%20up%20a%20Skupper%20network%2c%20is%20through%20the%20use%20of%20its%20Command%20Line%20Interface%20%28CLI%29%20tool%20named%20skupper.%0aFollowing%20its%20documentation%20and%20some%20examples%2c%20you%20will%20connect%20your%20cloud%20applications%20through%20a%20set%20of%20imperative%20commands%20that%20will%20help%20you%20setting%20everything%20up." aria-label="Tumblr">
       <i class="fab fa-tumblr " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&t=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops">
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&t=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops" aria-label="Hacker News">
       <i class="fab fa-hacker-news " aria-hidden="true"></i>
     </a>
   </li>
 </ul>
 
     </div>
+    
     <div id="toc">
       <nav id="TableOfContents">
   <ul>
@@ -194,6 +198,7 @@ Following its documentation and some examples, you will connect your cloud appli
   </ul>
 </nav>
     </div>
+    
   </span>
 </div>
 
@@ -211,6 +216,8 @@ Following its documentation and some examples, you will connect your cloud appli
           
         </div>
         
+        
+        
         <div class="article-category">
             <i class="fas fa-archive"></i>
             
@@ -226,18 +233,19 @@ Following its documentation and some examples, you will connect your cloud appli
             
             <a class="tag-link" href="/tags/skupper" rel="tag">skupper</a>
             
-            
+             ,  
             <a class="tag-link" href="/tags/gitops" rel="tag">gitops</a>
             
              ,  
             <a class="tag-link" href="/tags/argocd" rel="tag">argocd</a>
             
-        </div> 
+        </div>
         
       </div>
     </header>
 
   
+    
     <div class="content" itemprop="articleBody">
       <h2 id="hybrid-cloud-using-skupper">Hybrid Cloud using Skupper</h2>
 <p>Skupper enables service communication, transparently,
@@ -282,11 +290,11 @@ download and run a local Minikube cluster in your machine.</p>
 <ol>
 <li>Create a namespace for the Argo CD operator</li>
 </ol>
-<pre><code>kubectl create namespace argocd
+<pre tabindex="0"><code>kubectl create namespace argocd
 </code></pre><ol start="2">
 <li>Install Argo CD from Installation YAML</li>
 </ol>
-<pre><code>kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+<pre tabindex="0"><code>kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 </code></pre><ol start="3">
 <li>Install the <code>argocd</code> CLI</li>
 </ol>
@@ -298,7 +306,7 @@ and download the binary for your operating system.</p>
 <p>There are multiple ways you can use to get access to your Argo CD GUI, but
 in order to keep this guide simple, we are going to create a port-forward
 directly to the argocd-server service.</p>
-<pre><code>kubectl port-forward svc/argocd-server -n argocd 8080:443
+<pre tabindex="0"><code>kubectl port-forward svc/argocd-server -n argocd 8080:443
 </code></pre><p>Now you can access your API by using: <code>localhost:8080</code>.</p>
 <p>You will see a page like:
 <img src="/images/20210129-argocd-login.png" alt=""></p>
@@ -306,22 +314,22 @@ directly to the argocd-server service.</p>
 <li>
 <p>Logging in using your CLI</p>
 <p>5.1. First we need to retrieve the generated password. To do so, run:</p>
-<pre><code>$ kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2
+<pre tabindex="0"><code>$ kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d&#39;/&#39; -f 2
 </code></pre><p>The returned output is the initial password. Please save it temporarily.</p>
 <p>5.2. Login using argocd</p>
-<pre><code>$ argocd login localhost:8080
+<pre tabindex="0"><code>$ argocd login localhost:8080
 WARNING: server certificate had error: x509: certificate signed by unknown authority. Proceed insecurely (y/n)? y
 Username: admin
 Password:
-'admin' logged in successfully
-Context 'localhost:8080' updated
+&#39;admin&#39; logged in successfully
+Context &#39;localhost:8080&#39; updated
 </code></pre><p>5.3. Update admin&rsquo;s password</p>
-<pre><code>$ argocd account update-password
+<pre tabindex="0"><code>$ argocd account update-password
 *** Enter current password:
 *** Enter new password:
 *** Confirm new password:
 Password updated
-Context 'localhost:8080' updated
+Context &#39;localhost:8080&#39; updated
 </code></pre></li>
 <li>
 <p>Creating an application from a Git Repository</p>
@@ -405,8 +413,8 @@ the frontend application running at the <code>west</code> namespace.</p>
 is going to be deployed to the <code>east</code> namespace.</p>
 <p><a href="https://github.com/fgiorgetti/skupper-example-hello-world/blob/0388bee7b89ba01402bc0edddcd99ec531b3a4e0/gitops/east/backend/01-deployment.yaml#L7-L9">/gitops/east/backend/01-deployment.yaml</a></p>
 <p>Note that is contains two annotations:</p>
-<pre><code>    skupper.io/port: &quot;8080&quot;
-    skupper.io/proxy: &quot;http&quot;
+<pre tabindex="0"><code>    skupper.io/port: &#34;8080&#34;
+    skupper.io/proxy: &#34;http&#34;
 </code></pre><p>The first one <code>skupper.io/port</code> defines the port of the deployment to be exposed
 and the second one <code>skupper.io/proxy</code> defines the protocol of the service being
 exposed.</p>
@@ -449,7 +457,7 @@ The new service will be replicated to other sites automatically.</p>
 </ol>
 <h2 id="validate-applications-are-running">Validate applications are running</h2>
 <p>Verify the artifacts that have been created on both namespaces.</p>
-<pre><code>$ kubectl -n west get all
+<pre tabindex="0"><code>$ kubectl -n west get all
 NAME                                        READY   STATUS    RESTARTS   AGE
 pod/hello-world-frontend-55c84976c7-c6mq5   1/1     Running   0          31m
 
@@ -458,7 +466,7 @@ deployment.apps/hello-world-frontend   1/1     1            1           31m
 
 NAME                                              DESIRED   CURRENT   READY   AGE
 replicaset.apps/hello-world-frontend-55c84976c7   1         1         1       31m
-</code></pre><pre><code>$ kubectl -n east get all
+</code></pre><pre tabindex="0"><code>$ kubectl -n east get all
 NAME                                      READY   STATUS    RESTARTS   AGE
 pod/hello-world-backend-d8cf49cb7-h5vd4   1/1     Running   0          21m
 
@@ -472,10 +480,10 @@ cluster and in different namespaces. But as said earlier, they cannot communicat
 with each other.</p>
 <p>Let&rsquo;s try to create another port-forward to the frontend service, so we can verify
 it is up, but failing because it cannot reach the <code>backend</code> service.</p>
-<pre><code>$ kubectl -n west port-forward deployment/hello-world-frontend  8081:8080
+<pre tabindex="0"><code>$ kubectl -n west port-forward deployment/hello-world-frontend  8081:8080
 </code></pre><p>Try opening your browser and access: <code>http://localhost:8081</code>.</p>
 <p>You should see an error like:</p>
-<pre><code>Trouble! HTTPConnectionPool(host='hello-world-backend', port=8080): Max retries exceeded with url: /api/hello (Caused by NewConnectionError('&lt;urllib3.connection.HTTPConnection object at 0x7f0d059d7dd0&gt;: Failed to establish a new connection: [Errno -2] Name or service not known'))
+<pre tabindex="0"><code>Trouble! HTTPConnectionPool(host=&#39;hello-world-backend&#39;, port=8080): Max retries exceeded with url: /api/hello (Caused by NewConnectionError(&#39;&lt;urllib3.connection.HTTPConnection object at 0x7f0d059d7dd0&gt;: Failed to establish a new connection: [Errno -2] Name or service not known&#39;))
 </code></pre><p>The error above is an expected error, since both namespaces do not communicate&hellip; yet.</p>
 <h2 id="declaring-a-skupper-network-in-your-git-repository">Declaring a Skupper network in your git repository</h2>
 <p>First thing to do is ensure that we have Skupper running on both namespaces.
@@ -554,22 +562,22 @@ download the <code>skupper</code> tool. Please visit the <a href="https://github
 and download the client for your operating system.</p>
 <p><em>Make sure to install it as <code>skupper</code> and make sure it is available in your PATH.</em></p>
 <h4 id="validating-pods">Validating pods</h4>
-<pre><code>$ kubectl -n west get pods
+<pre tabindex="0"><code>$ kubectl -n west get pods
 NAME                                         READY   STATUS    RESTARTS   AGE
 hello-world-frontend-55c84976c7-c6mq5        1/1     Running   0          91m
 skupper-router-79b9db88bb-r42cf              1/1     Running   0          19m
 skupper-service-controller-b894b6554-gt64t   1/1     Running   0          19m
 skupper-site-controller-fc56c7686-wtwwp      1/1     Running   0          19m
 </code></pre><h4 id="validating-skupper-status">Validating skupper status</h4>
-<pre><code>$ skupper -n west status
-Skupper is enabled for namespace &quot;west&quot; with site name &quot;skupper-west&quot; in interior mode. It is not connected to any other sites. It has no exposed services.
+<pre tabindex="0"><code>$ skupper -n west status
+Skupper is enabled for namespace &#34;west&#34; with site name &#34;skupper-west&#34; in interior mode. It is not connected to any other sites. It has no exposed services.
 </code></pre><p><em>Repeat the same validation using the <strong>east</strong> namespace.</em></p>
 <h3 id="creating-a-connection-token-to-the-west-namespace">Creating a connection token to the west namespace</h3>
 <p>Next we need to create our Virtual Application Network (VAN) using Skupper
 to allow communication with exposed services from all namespaces.</p>
 <p>To do that, we must use the <code>skupper</code> tool to generate a connection token to
 the <code>west</code> namespace.</p>
-<pre><code>$ skupper -n west token create /tmp/west.token.yaml
+<pre tabindex="0"><code>$ skupper -n west token create /tmp/west.token.yaml
 </code></pre><p>This token allows you to connect another site to Skupper running at the <code>west</code>
 namespace. So it must be stored carefully.</p>
 <p>In this demo, we are not storing tokens in our Git Repository, but if you plan
@@ -578,30 +586,29 @@ to do so, make sure you are using <code>git crypt</code> to avoid exposing your 
 <p>As said above, we do not have the token in our sample Git Repository, so we must
 manually connect the <code>east</code> namespace to the <code>west</code> namespace.</p>
 <p>To do that, run:</p>
-<pre><code>$ skupper -n east link create /tmp/west.token.yaml
+<pre tabindex="0"><code>$ skupper -n east link create /tmp/west.token.yaml
 </code></pre><h3 id="verify-skupper-network-is-connected">Verify Skupper network is connected</h3>
 <p>After you have linked the two sites, you can monitor your network to ensure Skupper
 network is connected. Run:</p>
 <ul>
 <li>From <code>west</code> namespace</li>
 </ul>
-<pre><code>$ skupper -n west status
-Skupper is enabled for namespace &quot;west&quot; with site name &quot;skupper-west&quot; in interior mode. It is connected to 1 other site. It has 1 exposed service.
-
+<pre tabindex="0"><code>$ skupper -n west status
+Skupper is enabled for namespace &#34;west&#34; with site name &#34;skupper-west&#34; in interior mode. It is connected to 1 other site. It has 1 exposed service.
 </code></pre><ul>
 <li>From <code>east</code> namespace</li>
 </ul>
-<pre><code>$ skupper -n east status
-Skupper is enabled for namespace &quot;east&quot; with site name &quot;skupper-east&quot; in interior mode. It is connected to 1 other site. It has 1 exposed service.
+<pre tabindex="0"><code>$ skupper -n east status
+Skupper is enabled for namespace &#34;east&#34; with site name &#34;skupper-east&#34; in interior mode. It is connected to 1 other site. It has 1 exposed service.
 </code></pre><p>Now our Virtual Application Network is connected and the <code>hello-world-backend</code> deployment
 has been exposed as a service and it is available on both namespaces.</p>
 <h2 id="testing-the-frontend-application">Testing the frontend application</h2>
 <p>To test the frontend application, lets run the port-forward to the <code>hello-world-frontend</code> deployment
 one more time.</p>
-<pre><code>kubectl -n west port-forward deployment/hello-world-frontend 8081:8080
+<pre tabindex="0"><code>kubectl -n west port-forward deployment/hello-world-frontend 8081:8080
 </code></pre><p>Now open your Browser and type: <code>http://localhost:8081</code>.
 You should see a message like:</p>
-<pre><code>I am the frontend.  The backend says 'Hello from hello-world-backend-d8cf49cb7-h5vd4 (1)'.
+<pre tabindex="0"><code>I am the frontend.  The backend says &#39;Hello from hello-world-backend-d8cf49cb7-h5vd4 (1)&#39;.
 </code></pre><p>Success! Now the Frontend application running at the <code>west</code> namespace can reach out
 to the Backend application running at the <code>east</code> namespace through Skupper&rsquo;s exposed
 service <code>hello-world-backend</code>.</p>
@@ -612,6 +619,7 @@ service <code>hello-world-backend</code>.</p>
 
   
   
+
 
 
 
@@ -632,6 +640,7 @@ service <code>hello-world-backend</code>.</p>
       </ul>
     </div>
 
+    
     <div id="toc-footer" style="display: none">
       <nav id="TableOfContents">
   <ul>
@@ -666,6 +675,7 @@ service <code>hello-world-backend</code>.</p>
   </ul>
 </nav>
     </div>
+    
 
     <div id="share-footer" style="display: none">
       
@@ -676,57 +686,47 @@ service <code>hello-world-backend</code>.</p>
   
   
   <li>
-    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f">
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f" aria-label="Facebook">
       <i class="fab fa-facebook fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&text=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops">
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&text=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops" aria-label="Twitter">
       <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&title=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops">
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&title=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops" aria-label="Linkedin">
       <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&is_video=false&description=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops">
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&is_video=false&description=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops" aria-label="Pinterest">
       <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="mailto:?subject=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops&body=Check out this article: https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f">
+    <a class="icon" href="mailto:?subject=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops&body=Check out this article: https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f" aria-label="Email">
       <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&title=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops">
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&title=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops" aria-label="Pocket">
       <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&title=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops">
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&title=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops" aria-label="reddit">
       <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.stumbleupon.com/submit?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&title=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops">
-      <i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="http://digg.com/submit?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&title=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops">
-      <i class="fab fa-digg fa-lg" aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&name=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops&description=Hybrid%20Cloud%20using%20Skupper%20Skupper%20enables%20service%20communication%2c%20transparently%2c%20across%20multiple%20Kubernetes%20clusters.%0aFor%20more%20information%20about%20Skupper%2c%20as%20well%20as%20documentation%20and%20great%20examples%2c%20please%20visit%20https%3a%2f%2fskupper.io%2f.%0aThis%20article%20demonstrates%20how%20to%20setup%20and%20maintain%20a%20Virtual%20Application%20Network%20%28VAN%29%20using%20Skupper.%0aThe%20standard%20documented%20approach%20for%20setting%20up%20a%20Skupper%20network%2c%20is%20through%20the%20use%20of%20its%20Command%20Line%20Interface%20%28CLI%29%20tool%20named%20skupper.%0aFollowing%20its%20documentation%20and%20some%20examples%2c%20you%20will%20connect%20your%20cloud%20applications%20through%20a%20set%20of%20imperative%20commands%20that%20will%20help%20you%20setting%20everything%20up.">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&name=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops&description=Hybrid%20Cloud%20using%20Skupper%20Skupper%20enables%20service%20communication%2c%20transparently%2c%20across%20multiple%20Kubernetes%20clusters.%0aFor%20more%20information%20about%20Skupper%2c%20as%20well%20as%20documentation%20and%20great%20examples%2c%20please%20visit%20https%3a%2f%2fskupper.io%2f.%0aThis%20article%20demonstrates%20how%20to%20setup%20and%20maintain%20a%20Virtual%20Application%20Network%20%28VAN%29%20using%20Skupper.%0aThe%20standard%20documented%20approach%20for%20setting%20up%20a%20Skupper%20network%2c%20is%20through%20the%20use%20of%20its%20Command%20Line%20Interface%20%28CLI%29%20tool%20named%20skupper.%0aFollowing%20its%20documentation%20and%20some%20examples%2c%20you%20will%20connect%20your%20cloud%20applications%20through%20a%20set%20of%20imperative%20commands%20that%20will%20help%20you%20setting%20everything%20up." aria-label="Tumblr">
       <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&t=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops">
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2ffgiorgetti.github.io%2fposts%2f20210129-skupper-and-gitops%2f&t=Maintaining%20your%20Skupper%20Virtual%20Application%20Network%20with%20Gitops" aria-label="Hacker News">
       <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
     </a>
   </li>
@@ -736,13 +736,15 @@ service <code>hello-world-backend</code>.</p>
 
     <div id="actions-footer">
       
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;">
+        <a id="menu-toggle" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;" aria-label="Menu">
           <i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
-        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;">
+        
+        <a id="toc-toggle" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;" aria-label="TOC">
           <i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;">
+        
+        <a id="share-toggle" class="icon" href="#" onclick="$('#share-footer').toggle();return false;" aria-label="Share">
           <i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> share</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');">
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
           <i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
     </div>
 
@@ -752,7 +754,7 @@ service <code>hello-world-backend</code>.</p>
 
   <footer id="footer">
   <div class="footer-left">
-    Copyright  &copy; 2021  Fernando Giorgetti 
+    Copyright  &copy; 2022  Fernando Giorgetti 
   </div>
   <div class="footer-right">
     <nav>
@@ -776,6 +778,9 @@ service <code>hello-world-backend</code>.</p>
 <link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
 <script src=/lib/jquery/jquery.min.js></script>
 <script src=/js/main.js></script>
+
+<script src=/js/code-copy.js></script>
+
 
 
 

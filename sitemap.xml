@@ -1,75 +1,50 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
-  <url>
-    <loc>https://fgiorgetti.github.io/tags/bash/</loc>
-    <lastmod>2021-02-03T17:15:08-03:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://fgiorgetti.github.io/categories/</loc>
-    <lastmod>2021-02-03T17:15:08-03:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://fgiorgetti.github.io/tags/cobra/</loc>
-    <lastmod>2021-02-03T17:15:08-03:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://fgiorgetti.github.io/categories/example/</loc>
-    <lastmod>2021-02-03T17:15:08-03:00</lastmod>
-  </url>
-  
   <url>
     <loc>https://fgiorgetti.github.io/</loc>
+    <lastmod>2022-08-23T00:21:47-03:00</lastmod>
+  </url><url>
+    <loc>https://fgiorgetti.github.io/posts/20220823-file-watcher-with-fsnotify/</loc>
+    <lastmod>2022-08-23T00:21:47-03:00</lastmod>
+  </url><url>
+    <loc>https://fgiorgetti.github.io/posts/</loc>
+    <lastmod>2022-08-23T00:21:47-03:00</lastmod>
+  </url><url>
+    <loc>https://fgiorgetti.github.io/tags/bash/</loc>
     <lastmod>2021-02-03T17:15:08-03:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
+    <loc>https://fgiorgetti.github.io/categories/</loc>
+    <lastmod>2021-02-03T17:15:08-03:00</lastmod>
+  </url><url>
+    <loc>https://fgiorgetti.github.io/tags/cobra/</loc>
+    <lastmod>2021-02-03T17:15:08-03:00</lastmod>
+  </url><url>
+    <loc>https://fgiorgetti.github.io/categories/example/</loc>
+    <lastmod>2021-02-03T17:15:08-03:00</lastmod>
+  </url><url>
     <loc>https://fgiorgetti.github.io/tags/golang/</loc>
     <lastmod>2021-02-03T17:15:08-03:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://fgiorgetti.github.io/posts/20210203-golang-bash-completion/</loc>
     <lastmod>2021-02-03T17:15:08-03:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://fgiorgetti.github.io/posts/</loc>
-    <lastmod>2021-02-03T17:15:08-03:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://fgiorgetti.github.io/tags/</loc>
     <lastmod>2021-02-03T17:15:08-03:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://fgiorgetti.github.io/tags/argocd/</loc>
     <lastmod>2021-01-29T18:27:23-03:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://fgiorgetti.github.io/tags/gitops/</loc>
     <lastmod>2021-01-29T18:27:23-03:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://fgiorgetti.github.io/posts/20210129-skupper-and-gitops/</loc>
     <lastmod>2021-01-29T18:27:23-03:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://fgiorgetti.github.io/tags/skupper/</loc>
     <lastmod>2021-01-29T18:27:23-03:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://fgiorgetti.github.io/categories/tutorial/</loc>
     <lastmod>2021-01-29T18:27:23-03:00</lastmod>
   </url>
-  
 </urlset>

@@ -6,8 +6,27 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>Fernando Giorgetti</copyright>
-        <lastBuildDate>Tue, 23 Aug 2022 00:21:47 -0300</lastBuildDate>
+        <lastBuildDate>Thu, 17 Nov 2022 16:13:04 -0300</lastBuildDate>
         <atom:link href="https://fgiorgetti.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Skupper Network Deployment using Ansible</title>
+            <link>https://fgiorgetti.github.io/posts/20221117-skupper-network-deployment/</link>
+            <pubDate>Thu, 17 Nov 2022 16:13:04 -0300</pubDate>
+            
+            <guid>https://fgiorgetti.github.io/posts/20221117-skupper-network-deployment/</guid>
+            <description>I have prepared the following video demonstrating a new approach to set up your Skupper network using Ansible.
+The example demonstrated in the video, can be found at: https://github.com/skupperproject/skupper-ansible/tree/main/examples/hello-world
+Here is the link to the video: https://youtu.be/7H0lhjloiTA</description>
+            <content type="html"><![CDATA[<p>I have prepared the following video demonstrating a new approach to set up your
+Skupper network using Ansible.</p>
+<p>The example demonstrated in the video, can be found at:
+<a href="https://github.com/skupperproject/skupper-ansible/tree/main/examples/hello-world">https://github.com/skupperproject/skupper-ansible/tree/main/examples/hello-world</a></p>
+<p>Here is the link to the video:
+<a href="https://youtu.be/7H0lhjloiTA">https://youtu.be/7H0lhjloiTA</a></p>
+<!-- raw HTML omitted -->
+]]></content>
+        </item>
         
         <item>
             <title>File Watcher With Fsnotify</title>

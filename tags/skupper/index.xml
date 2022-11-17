@@ -7,7 +7,18 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Fernando Giorgetti</copyright>
-    <lastBuildDate>Fri, 29 Jan 2021 18:27:23 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/skupper/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 17 Nov 2022 16:13:04 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/skupper/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Skupper Network Deployment using Ansible</title>
+      <link>https://fgiorgetti.github.io/posts/20221117-skupper-network-deployment/</link>
+      <pubDate>Thu, 17 Nov 2022 16:13:04 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/posts/20221117-skupper-network-deployment/</guid>
+      <description>I have prepared the following video demonstrating a new approach to set up your Skupper network using Ansible.
+The example demonstrated in the video, can be found at: https://github.com/skupperproject/skupper-ansible/tree/main/examples/hello-world
+Here is the link to the video: https://youtu.be/7H0lhjloiTA</description>
+    </item>
+    
     <item>
       <title>Maintaining your Skupper Virtual Application Network with Gitops</title>
       <link>https://fgiorgetti.github.io/posts/20210129-skupper-and-gitops/</link>

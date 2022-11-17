@@ -15,8 +15,7 @@
       
       <guid>https://fgiorgetti.github.io/posts/20221117-skupper-network-deployment/</guid>
       <description>I have prepared the following video demonstrating a new approach to set up your Skupper network using Ansible.
-The example demonstrated in the video, can be found at: https://github.com/skupperproject/skupper-ansible/tree/main/examples/hello-world
-Here is the link to the video: https://youtu.be/7H0lhjloiTA</description>
+The example demonstrated in the video, can be found at: https://github.com/skupperproject/skupper-ansible/tree/main/examples/hello-world</description>
     </item>
     
   </channel>

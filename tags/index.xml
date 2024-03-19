@@ -7,22 +7,49 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Fernando Giorgetti</copyright>
-    <lastBuildDate>Thu, 17 Nov 2022 16:13:04 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 19 Mar 2024 10:19:00 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>ansible</title>
-      <link>https://fgiorgetti.github.io/tags/ansible/</link>
-      <pubDate>Thu, 17 Nov 2022 16:13:04 -0300</pubDate>
+      <title>kubernetes</title>
+      <link>https://fgiorgetti.github.io/tags/kubernetes/</link>
+      <pubDate>Tue, 19 Mar 2024 10:19:00 -0300</pubDate>
       
-      <guid>https://fgiorgetti.github.io/tags/ansible/</guid>
+      <guid>https://fgiorgetti.github.io/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>podman</title>
+      <link>https://fgiorgetti.github.io/tags/podman/</link>
+      <pubDate>Tue, 19 Mar 2024 10:19:00 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/tags/podman/</guid>
       <description></description>
     </item>
     
     <item>
       <title>skupper</title>
       <link>https://fgiorgetti.github.io/tags/skupper/</link>
-      <pubDate>Thu, 17 Nov 2022 16:13:04 -0300</pubDate>
+      <pubDate>Tue, 19 Mar 2024 10:19:00 -0300</pubDate>
       
       <guid>https://fgiorgetti.github.io/tags/skupper/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>skupper-router</title>
+      <link>https://fgiorgetti.github.io/tags/skupper-router/</link>
+      <pubDate>Tue, 19 Mar 2024 10:19:00 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/tags/skupper-router/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ansible</title>
+      <link>https://fgiorgetti.github.io/tags/ansible/</link>
+      <pubDate>Thu, 17 Nov 2022 16:13:04 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/tags/ansible/</guid>
       <description></description>
     </item>
     

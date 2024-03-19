@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kubernetes on Fernando Giorgetti - about me</title>
+    <link>https://fgiorgetti.github.io/tags/kubernetes/</link>
+    <description>Recent content in kubernetes on Fernando Giorgetti - about me</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Fernando Giorgetti</copyright>
+    <lastBuildDate>Tue, 19 Mar 2024 10:19:00 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Playing with kube files using Podman</title>
+      <link>https://fgiorgetti.github.io/posts/20240319-podman-kube-play/</link>
+      <pubDate>Tue, 19 Mar 2024 10:19:00 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/posts/20240319-podman-kube-play/</guid>
+      <description>The goal of this exercise is to create two skupper-router containers named skupper-router-east and skupper-router-west with Podman, exposing a TLS AMQP listener on the east router, with all generated credentials and router configuration included as Kubernetes descriptors (using YAML), so that these YAML files can be loaded with podman kube play to spin up the two router pods.
+All files mentioned here, can be found below.
+Deploying this sample To deploy this sample, run: .</description>
+    </item>
+    
+  </channel>
+</rss>

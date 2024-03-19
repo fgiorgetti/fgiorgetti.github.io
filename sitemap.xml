@@ -2,22 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://fgiorgetti.github.io/</loc>
+    <lastmod>2024-03-19T10:19:00-03:00</lastmod>
+  </url><url>
+    <loc>https://fgiorgetti.github.io/tags/kubernetes/</loc>
+    <lastmod>2024-03-19T10:19:00-03:00</lastmod>
+  </url><url>
+    <loc>https://fgiorgetti.github.io/posts/20240319-podman-kube-play/</loc>
+    <lastmod>2024-03-19T10:19:00-03:00</lastmod>
+  </url><url>
+    <loc>https://fgiorgetti.github.io/tags/podman/</loc>
+    <lastmod>2024-03-19T10:19:00-03:00</lastmod>
+  </url><url>
+    <loc>https://fgiorgetti.github.io/posts/</loc>
+    <lastmod>2024-03-19T10:19:00-03:00</lastmod>
+  </url><url>
+    <loc>https://fgiorgetti.github.io/tags/skupper/</loc>
+    <lastmod>2024-03-19T10:19:00-03:00</lastmod>
+  </url><url>
+    <loc>https://fgiorgetti.github.io/tags/skupper-router/</loc>
+    <lastmod>2024-03-19T10:19:00-03:00</lastmod>
+  </url><url>
+    <loc>https://fgiorgetti.github.io/tags/</loc>
+    <lastmod>2024-03-19T10:19:00-03:00</lastmod>
+  </url><url>
     <loc>https://fgiorgetti.github.io/tags/ansible/</loc>
     <lastmod>2022-11-17T16:13:04-03:00</lastmod>
   </url><url>
-    <loc>https://fgiorgetti.github.io/</loc>
-    <lastmod>2022-11-17T16:13:04-03:00</lastmod>
-  </url><url>
-    <loc>https://fgiorgetti.github.io/posts/</loc>
-    <lastmod>2022-11-17T16:13:04-03:00</lastmod>
-  </url><url>
-    <loc>https://fgiorgetti.github.io/tags/skupper/</loc>
-    <lastmod>2022-11-17T16:13:04-03:00</lastmod>
-  </url><url>
     <loc>https://fgiorgetti.github.io/posts/20221117-skupper-network-deployment/</loc>
-    <lastmod>2022-11-17T16:13:04-03:00</lastmod>
-  </url><url>
-    <loc>https://fgiorgetti.github.io/tags/</loc>
     <lastmod>2022-11-17T16:13:04-03:00</lastmod>
   </url><url>
     <loc>https://fgiorgetti.github.io/categories/</loc>

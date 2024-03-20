@@ -16,8 +16,8 @@
       <guid>https://fgiorgetti.github.io/posts/20240320-router-with-compose/</guid>
       <description>A compose file can also be an interesting way to run a static bundle for skupper-routers. Here I am using a two routers network, named west and east.
 The west router has an inter-router link (secured with TLS) defined to connect with the east one (using skupper-router-east hostname).
-All the configuration files, sample certificates and compose files can be downloaded by clicking the following link: Example files (tarball).
-Once you extract the tarball, you will fine a new directory named example which contains the compose.</description>
+All the configuration, sample certificates and compose files can be downloaded by clicking the following link: Example files (tarball).
+Once you extract the tarball, you will find a new directory named example which contains the compose.</description>
     </item>
     
   </channel>

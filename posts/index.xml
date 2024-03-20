@@ -17,17 +17,17 @@
             <guid>https://fgiorgetti.github.io/posts/20240320-router-with-compose/</guid>
             <description>A compose file can also be an interesting way to run a static bundle for skupper-routers. Here I am using a two routers network, named west and east.
 The west router has an inter-router link (secured with TLS) defined to connect with the east one (using skupper-router-east hostname).
-All the configuration files, sample certificates and compose files can be downloaded by clicking the following link: Example files (tarball).
-Once you extract the tarball, you will fine a new directory named example which contains the compose.</description>
+All the configuration, sample certificates and compose files can be downloaded by clicking the following link: Example files (tarball).
+Once you extract the tarball, you will find a new directory named example which contains the compose.</description>
             <content type="html"><![CDATA[<p>A compose file can also be an interesting way to run a static bundle for skupper-routers.
 Here I am using a two routers network, named west and east.</p>
 <p>The west router has an inter-router link (secured with TLS) defined to connect with the
 east one (using skupper-router-east hostname).</p>
-<p>All the configuration files, sample certificates and compose files can be downloaded by clicking
+<p>All the configuration, sample certificates and compose files can be downloaded by clicking
 the following link: <a href="example.tar.gz">Example files (tarball)</a>.</p>
-<p>Once you extract the tarball, you will fine a new directory named example which contains
-the <code>compose.yaml</code> file, as well as all the configuration needed by the two routers under
-<code>./example/west</code> and <code>./example/east</code>.</p>
+<p>Once you extract the tarball, you will find a new directory named example which contains
+the <code>compose.yaml</code> file, as well as all the directories storing the configuration needed by
+the two routers, under: <code>./example/west</code> and <code>./example/east</code>.</p>
 <p>This <code>compose.yaml</code> file, works with both docker and podman.</p>
 <p>To deploy this multi-container scenario, run:</p>
 <table>

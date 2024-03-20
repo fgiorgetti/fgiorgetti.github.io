@@ -1,0 +1,19 @@
+name: sample
+services:
+  skupper-router-east:
+    image: quay.io/skupper/skupper-router:main
+    ports:
+      - "55671:55671"
+      - "45671:45671"
+    volumes:
+      - ./east/skupper-router:/etc/skupper-router:z
+    environment:
+      QDROUTERD_CONF: "/etc/skupper-router/config/skrouterd.json"
+      QDROUTERD_CONF_TYPE: "json"
+  skupper-router-west:
+    image: quay.io/skupper/skupper-router:main
+    volumes:
+      - ./west/skupper-router:/etc/skupper-router:z
+    environment:
+      QDROUTERD_CONF: "/etc/skupper-router/config/skrouterd.json"
+      QDROUTERD_CONF_TYPE: "json"

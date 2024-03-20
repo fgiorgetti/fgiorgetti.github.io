@@ -1,0 +1,249 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: skupper-router-east-config
+data:
+  skrouterd.json: |
+    [
+        [
+            "router",
+            {
+                "id": "${HOSTNAME}",
+                "mode": "interior",
+                "helloMaxAgeSeconds": "3"
+            }
+        ],
+        [
+            "sslProfile",
+            {
+                "name": "skupper-east-certs",
+                "certFile": "/etc/skupper-router-certs/skupper-east-certs/tls.crt",
+                "privateKeyFile": "/etc/skupper-router-certs/skupper-east-certs/tls.key",
+                "caCertFile": "/etc/skupper-router-certs/skupper-east-certs/ca.crt"
+            }
+        ],
+        [
+            "listener",
+            {
+                "name": "interior-listener",
+                "role": "inter-router",
+                "port": 55671,
+                "sslProfile": "skupper-east-certs",
+                "saslMechanisms": "EXTERNAL",
+                "authenticatePeer": true,
+                "maxFrameSize": 16384,
+                "maxSessionFrames": 640
+            }
+        ],
+        [
+            "listener",
+            {
+                "name": "edge-listener",
+                "role": "edge",
+                "port": 45671,
+                "sslProfile": "skupper-east-certs",
+                "saslMechanisms": "EXTERNAL",
+                "authenticatePeer": true,
+                "maxFrameSize": 16384,
+                "maxSessionFrames": 640
+            }
+        ],
+        [
+            "listener",
+            {
+                "name": "@9090",
+                "role": "normal",
+                "port": 9090,
+                "http": true,
+                "httpRootDir": "disabled",
+                "healthz": true,
+                "metrics": true
+            }
+        ],
+        [
+            "listener",
+            {
+                "name": "amqp",
+                "host": "localhost",
+                "port": 5672
+            }
+        ],
+        [
+            "address",
+            {
+                "prefix": "mc",
+                "distribution": "multicast"
+            }
+        ],
+        [
+            "log",
+            {
+                "module": "ROUTER_CORE",
+                "enable": "error+"
+            }
+        ]
+    ]
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: skupper-east-certs
+type: kubernetes.io/tls
+data:
+  ca.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURVekNDQWp1Z0F3SUJBZ0lVSnNNSmM1NkNsRE9nVnBuSks2RkJqOXpkalRFd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0ZURVRNQkVHQTFVRUF3d0tjMnQxY0hCbGNpMWpZVEFlRncweU5EQXpNVGt4TkRVd05EWmFGdzB5T1RBegpNVGd4TkRVd05EWmFNQlV4RXpBUkJnTlZCQU1NQ25OcmRYQndaWEl0WTJFd2dnRWlNQTBHQ1NxR1NJYjNEUUVCCkFRVUFBNElCRHdBd2dnRUtBb0lCQVFETzR3MTFBa1VLMEtRR2c1YVhSVUp6UmY3cUYvTEM2aWZRb2FFbXdhc2kKczR2MUIvOGticzdzNWFYdktxQ2Z0bkhTMTVTYUlTVDV5NzMzYkx4b2U4RGpkTXNSWEliYjZNN2VOMmVjcU9iWgorVTlGRWpPNVpiem90aXJIL2xLSmttTDF2eWNKMXJ3S2JmZHdZM09BcmVZQzRpNVVJdkVaYWFIY3F3Wm8yd2wxCmo1aFJ0LzRxdWt6eEwwN0VzY0dUR3M1VUlXVHpPc1FVRS9YRU5ZMzMzNFJuK2FkSHQ2T24vaGtzZUFER3pwaVMKY2swYlVubzNYL3I2OVZGSUR5Tkg0UzVHMjc1YzM3L0c1azVPL2hacy9XK1BRWmxrS0lpb2k5dklvRllIUFRtZwpRSkxiZG5PM0NEbXN5U3pJSkZGWmZyMnF6LzU3US9kK1JZWFRndjM1T3NzZEFnTUJBQUdqZ1pvd2daY3dIUVlEClZSME9CQllFRk5nL3dnOWoveXFMV3Y3eVJpVVoyT1B2aCtFRk1COEdBMVVkSXdRWU1CYUFGTmcvd2c5ai95cUwKV3Y3eVJpVVoyT1B2aCtFRk1BOEdBMVVkRXdFQi93UUZNQU1CQWY4d0ZRWURWUjBSQkE0d0RJSUtjMnQxY0hCbApjaTFqWVRBT0JnTlZIUThCQWY4RUJBTUNBcVF3SFFZRFZSMGxCQll3RkFZSUt3WUJCUVVIQXdFR0NDc0dBUVVGCkJ3TUNNQTBHQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUNIREM2RFV2TzlNalMrOVZkWklEVDlsSjJwV2lTaXl6anUKVityUUdaQkx6dWhNdzYxV2Q2V3pkRUNZdEwzdXY0Um00Y0dDMWdyMDlGQkVvQStIK2VJZ3BmT0FhbVBhcEc1RQpYYUNYeHlkVU0xZTBRN3F1dEpIcDVGUFArWEo3RUQ2Q2I2V3BKTDdSbzdjdFJXOWNyUmNLQWRac1J1dERBTDFQCnlHR0lsNTRSZXpldDNMQ28zZ2RhdVhxc1VQeTdlTzZkd3lrSTRiRWZCOU1kSEJuMWtvWVA5UWp1TjRFWEJPbGQKT2hOcjVLYnM3L0xUSERiMFNHL0M2WTBUdmRVamYvQ25hUCtHWFl4a0RSZnFRMXdNdmFxaVBseXRybnF4VDFXegpWY1FPVFZkUnZNT0MrSDI4N29yanZYSUVIaFFxVUZyUDhEQ1NieGlaUUdMU0FKSTM2OHJvCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURuVENDQW9XZ0F3SUJBZ0lVTTlEWllXL3A5VzVTUmJtKzVpQ2h5YUFuMDdRd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0ZURVRNQkVHQTFVRUF3d0tjMnQxY0hCbGNpMWpZVEFlRncweU5EQXpNVGt4TkRVeE1qaGFGdzB5T1RBegpNVGd4TkRVeE1qaGFNQjR4SERBYUJnTlZCQU1NRTNOcmRYQndaWEl0Y205MWRHVnlMV1ZoYzNRd2dnRWlNQTBHCkNTcUdTSWIzRFFFQkFRVUFBNElCRHdBd2dnRUtBb0lCQVFEUkthOGxOcXhVRUhQQUtIcU5CTnNPRmlMdHFhTkYKdlpsL0lwRDN2emZjRDZMeG9vYUk0a1JFNGhCbGpLeW8vNTYwRFRGSDJHcS9ZemtzTVFuSjltN3ZxTk9uY0N6UQpLaFF3ZDZXTWNTWDlQTXJmVC8ya2dCLy84d1ViSFUxSEtsWXcwdEFvOGd2NGlneTRFV1M2d2wyQlNWUVNVb0hmCktXOHVLcGE1VnBiRzZ2N2YrVDlEdkg0VUdwWXVGNzNTa25yeTFpUmVRMVFZdzZ6b0lRTEV5cks2WmQ3b2ZTSmwKamRyL00wVVlkMnNmeXV2RkZHVXlDZzgzalg4NEhKU3RQeTVFcDBGMy8vT2ZZRWh2KzV2WVpUSklFSWxBR2RjYwptOGRGb1ZKM1FmV2ErcU05Z2RkbXNmM0V6QUZPTmsyeFpBZkFqbC9XazlNbnhORE1FZjZEei9yUEFnTUJBQUdqCmdkc3dnZGd3SFFZRFZSME9CQllFRk55NG5EVkQrSVNGMTArb2xwdytRWXpmWjJ1d01GQUdBMVVkSXdSSk1FZUEKRk5nL3dnOWoveXFMV3Y3eVJpVVoyT1B2aCtFRm9SbWtGekFWTVJNd0VRWURWUVFEREFwemEzVndjR1Z5TFdOaApnaFFtd3dsem5vS1VNNkJXbWNrcm9VR1AzTjJOTVRBTUJnTlZIUk1FQlRBREFRSC9NQXNHQTFVZER3UUVBd0lDCi9EQXpCZ05WSFJFRUxEQXFnaE56YTNWd2NHVnlMWEp2ZFhSbGNpMWxZWE4wZ2hOemEzVndjR1Z5TFhKdmRYUmwKY2kxbFlYTjBNQlVHQTFVZEVnUU9NQXlDQ25OcmRYQndaWEl0WTJFd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQgpBR0gvOWZOeWpLVlhKZlY4UXF4cFp6S1R1RGtXY0VJY1JqeXdKVUIvZm5OM0FwYmNpMk85TkdFbHpwWHRGRHViCnMrMEY5RXdXOVZSWFB0V2JyZXlSN24xQSs1KzJIdFZSSnlOMG14cDZURlpiZ2VkSzhTaWZqYzJVbHBVZEN3MWEKbWhnTTh5a1FrU1RuZXpnSExuTVExTHl1cWpFVlV6OW1RQkZ0S0M0YXMyZ3FqcVA0dFhhbTJmVVd1TjJSbys3TApmRXQ0Q2MrNjZEdjM2UTRVUXlreXB6SlV6cERVSDhQK3dzVWVGRWpjcG9aWmwwVXRaQmpQaDV4b3I4Y2VHMktjCkxQZ2FjYktnS0RkenI0REZFaVludmtCVEE5bjkxdWQ5MkxSR2VHR1d1UDhOME9FeXBSd2xlMjROSi9iRzJhcTEKUmhDNHRpMHB2MXRxQUZEOFU4QXBOT1E9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBMFNtdkpUYXNWQkJ6d0NoNmpRVGJEaFlpN2FtalJiMlpmeUtROTc4MzNBK2k4YUtHCmlPSkVST0lRWll5c3FQK2V0QTB4UjlocXYyTTVMREVKeWZadTc2alRwM0FzMENvVU1IZWxqSEVsL1R6SzMwLzkKcElBZi8vTUZHeDFOUnlwV01OTFFLUElMK0lvTXVCRmt1c0pkZ1VsVUVsS0IzeWx2TGlxV3VWYVd4dXIrMy9rLwpRN3grRkJxV0xoZTkwcEo2OHRZa1hrTlVHTU9zNkNFQ3hNcXl1bVhlNkgwaVpZM2Evek5GR0hkckg4cnJ4UlJsCk1nb1BONDEvT0J5VXJUOHVSS2RCZC8vem4yQkliL3ViMkdVeVNCQ0pRQm5YSEp2SFJhRlNkMEgxbXZxalBZSFgKWnJIOXhNd0JUalpOc1dRSHdJNWYxcFBUSjhUUXpCSCtnOC82endJREFRQUJBb0lCQUJOVXYrdzNqbHZDbllBUAovYXVVM0U0RCs3eHRaanFtMkUzb3V1ODZ6QVhacUJ5ZkFjSWE3MlpTWW1PUVNkRGd0eUU2NnVnUjkyT3kzdkRYCm8yajREcTYxc3NJUjJ3SnVNU2w5bFY1U2dzbFIyZ29qa1hTbnBzMTMvMnZQSEhwTVRtVDZ4dVJSNG90WTd1NEEKSllnaE9KVWZXdGJLcTFnZHN6bllFOUFUVWFJV29SNUxWN0lHWmZMM0NMRXd1bWQ2eXdPWUYrQWpCWlZlU09ORgp2endkVm9TT1Z3eE4vZkd2TGJtL2lTVEExQUVKbXBnUXl2UWdUMkE2cjdtS2FyU2dWSGE2YnBxUnNYNGlLZkZ4CnY3RFRVTWpwd0czWWV6RXY3Yk9oMi9COWpYbGd3WjcwQ3FRODJTR2I0RExwd0x0dXRkSU4xSktYbGxwRUI4YXcKcm53N1Uwa0NnWUVBOHpVV01RRmtCbE5OcTVab29mTDE2TkhlOHVhT1F4WjJmYWxyRGJiSnBzakE0NW1TQ1htSApKT1RZQmRIbEhpZ2lZMUJMV2czS25LVkp4cXZWQXFJVU9yc0NuK1AyTHJnMkprQXpZODBpczNJSFlGQkJGcExkCjhDeXRDaHpaem1zUm42b0JkSjI3a2ZpY0xpMUFTSHJpSDRyOXF2RzlxU3gxQjkwL05jMjRya01DZ1lFQTNDb3IKaW5YOVdHQ0ZheEd2akhXRWl4aXRWZzg3Y0cxZFhIekZmVWYzdUxwendtODFEUVJTMEVTbkhpQ3BMU1crY1NQSgorUGlUcVNlMkluUnZvSitQS0g1U0IvSEZDeHpiR0MrMTZaTmFieHFSTW12YlBvQ1Fud2U2aGpiczg2QnBDUCtXCmR5VWZScUNSb21mdEhnNlhKOTdhR0QzTVJycHJJUERWTDR2S3BvVUNnWUVBNjZ5T3c1QTRjRlM3R0VKWlJFNGUKODZ5ajRqZCt0ZzRIWm9BTXlDNVB2RG9maUs0aE1PTStEWWRndWtzS1BpM2dIT01MRWNuNWc5QTc3TFJJWnhQTwpqSmI1MVJ6ZlM2aWdlSEtRR2U4SDZHSGdPZm1yQ1FmcTN6azd1V2Y1dkNoTzNLeXVXbVliQkRtb2hxcTg5ejkwCjdlSVBMRjZ6VGtOUmFQeUJxMDZkM3VjQ2dZRUFuQlBaSWlOYkl0ZnFQV2tnUmpiWmE3Sm16MmVrLzZMSVdOU3IKUEpGVWNFVGQ0Nnpxc3Z1cHFiUEJ0WDM1OE9PZENxQVFnc3ZXQWtrQXVaUkp2bGpmS0JuRkZaU3oxNWp4U1VncApjaGpnTjN0aUM1aWlxTUNEeGZtNHBZVXluZFBPSW03dXdEQTA1K0RVM1lsSGM5TnNIUHZES1FSR1dLMjNYSGJlCjZ3SHkrL0VDZ1lBNGJLbExPMHdqeStONGF2emlFVUkvUEg3em9KaG55bHdpWFllTDRDd1QvNHdFYytQUTNMVVkKaFBXYTdpVjB6Y1h1K290RFJNYUJLSHZOZ0ZQaUxVWmNRRStET0lwNGRWTWFEWC9Bai9zcm1TVUxrd05ycUMvTApyWmNuQUo2MFR0eWVxS1ZGVlJnV21BUXkwSnYvcXJTZlBkUVdJZzkxM3U3ajQvMi9xRDhrZ0E9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2024-03-19T13:52:20Z"
+  labels:
+    app: skupper-router-east-pod
+  name: skupper-router-east-pod
+spec:
+  containers:
+  - env:
+    - name: QDROUTERD_CONF
+      value: /etc/skupper-router/config/skrouterd.json
+    - name: QDROUTERD_CONF_TYPE
+      value: json
+    image: quay.io/skupper/skupper-router:main
+    name: skupper-router-east
+    ports:
+    - containerPort: 45671
+      hostPort: 45671
+    - containerPort: 55671
+      hostPort: 55671
+    volumeMounts:
+    - mountPath: /etc/skupper-router/config/
+      name: skupper-router-east-config
+    - mountPath: /etc/skupper-router-certs/skupper-east-certs/
+      name: skupper-east-certs
+  restartPolicy: Always
+  volumes:
+  - name: skupper-router-east-config
+    configMap:
+      defaultMode: 420
+      name: skupper-router-east-config
+  - name: skupper-east-certs
+    secret:
+      defaultMode: 420
+      secretName: skupper-east-certs
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: skupper-router-west-config
+data:
+  skrouterd.json: |
+    [
+        [
+            "router",
+            {
+                "id": "${HOSTNAME}",
+                "mode": "interior",
+                "helloMaxAgeSeconds": "3"
+            }
+        ],
+        [
+            "sslProfile",
+            {
+                "name": "skupper-west-certs",
+                "certFile": "/etc/skupper-router-certs/skupper-west-certs/tls.crt",
+                "privateKeyFile": "/etc/skupper-router-certs/skupper-west-certs/tls.key",
+                "caCertFile": "/etc/skupper-router-certs/skupper-west-certs/ca.crt"
+            }
+        ],
+        [
+            "connector",
+            {
+                "name": "west-to-east",
+                "role": "inter-router",
+                "host": "skupper-router-east",
+                "port": 55671,
+                "sslProfile": "skupper-west-certs",
+                "saslMechanisms": "EXTERNAL",
+                "maxFrameSize": 16384,
+                "maxSessionFrames": 640
+            }
+        ],
+        [
+            "listener",
+            {
+                "name": "@9090",
+                "role": "normal",
+                "port": 9090,
+                "http": true,
+                "httpRootDir": "disabled",
+                "healthz": true,
+                "metrics": true
+            }
+        ],
+        [
+            "listener",
+            {
+                "name": "amqp",
+                "host": "localhost",
+                "port": 5672
+            }
+        ],
+        [
+            "address",
+            {
+                "prefix": "mc",
+                "distribution": "multicast"
+            }
+        ],
+        [
+            "log",
+            {
+                "module": "ROUTER_CORE",
+                "enable": "error+"
+            }
+        ]
+    ]
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: skupper-west-certs
+type: kubernetes.io/tls
+data:
+  ca.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURVekNDQWp1Z0F3SUJBZ0lVSnNNSmM1NkNsRE9nVnBuSks2RkJqOXpkalRFd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0ZURVRNQkVHQTFVRUF3d0tjMnQxY0hCbGNpMWpZVEFlRncweU5EQXpNVGt4TkRVd05EWmFGdzB5T1RBegpNVGd4TkRVd05EWmFNQlV4RXpBUkJnTlZCQU1NQ25OcmRYQndaWEl0WTJFd2dnRWlNQTBHQ1NxR1NJYjNEUUVCCkFRVUFBNElCRHdBd2dnRUtBb0lCQVFETzR3MTFBa1VLMEtRR2c1YVhSVUp6UmY3cUYvTEM2aWZRb2FFbXdhc2kKczR2MUIvOGticzdzNWFYdktxQ2Z0bkhTMTVTYUlTVDV5NzMzYkx4b2U4RGpkTXNSWEliYjZNN2VOMmVjcU9iWgorVTlGRWpPNVpiem90aXJIL2xLSmttTDF2eWNKMXJ3S2JmZHdZM09BcmVZQzRpNVVJdkVaYWFIY3F3Wm8yd2wxCmo1aFJ0LzRxdWt6eEwwN0VzY0dUR3M1VUlXVHpPc1FVRS9YRU5ZMzMzNFJuK2FkSHQ2T24vaGtzZUFER3pwaVMKY2swYlVubzNYL3I2OVZGSUR5Tkg0UzVHMjc1YzM3L0c1azVPL2hacy9XK1BRWmxrS0lpb2k5dklvRllIUFRtZwpRSkxiZG5PM0NEbXN5U3pJSkZGWmZyMnF6LzU3US9kK1JZWFRndjM1T3NzZEFnTUJBQUdqZ1pvd2daY3dIUVlEClZSME9CQllFRk5nL3dnOWoveXFMV3Y3eVJpVVoyT1B2aCtFRk1COEdBMVVkSXdRWU1CYUFGTmcvd2c5ai95cUwKV3Y3eVJpVVoyT1B2aCtFRk1BOEdBMVVkRXdFQi93UUZNQU1CQWY4d0ZRWURWUjBSQkE0d0RJSUtjMnQxY0hCbApjaTFqWVRBT0JnTlZIUThCQWY4RUJBTUNBcVF3SFFZRFZSMGxCQll3RkFZSUt3WUJCUVVIQXdFR0NDc0dBUVVGCkJ3TUNNQTBHQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUNIREM2RFV2TzlNalMrOVZkWklEVDlsSjJwV2lTaXl6anUKVityUUdaQkx6dWhNdzYxV2Q2V3pkRUNZdEwzdXY0Um00Y0dDMWdyMDlGQkVvQStIK2VJZ3BmT0FhbVBhcEc1RQpYYUNYeHlkVU0xZTBRN3F1dEpIcDVGUFArWEo3RUQ2Q2I2V3BKTDdSbzdjdFJXOWNyUmNLQWRac1J1dERBTDFQCnlHR0lsNTRSZXpldDNMQ28zZ2RhdVhxc1VQeTdlTzZkd3lrSTRiRWZCOU1kSEJuMWtvWVA5UWp1TjRFWEJPbGQKT2hOcjVLYnM3L0xUSERiMFNHL0M2WTBUdmRVamYvQ25hUCtHWFl4a0RSZnFRMXdNdmFxaVBseXRybnF4VDFXegpWY1FPVFZkUnZNT0MrSDI4N29yanZYSUVIaFFxVUZyUDhEQ1NieGlaUUdMU0FKSTM2OHJvCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURuVENDQW9XZ0F3SUJBZ0lVTTlEWllXL3A5VzVTUmJtKzVpQ2h5YUFuMDdVd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0ZURVRNQkVHQTFVRUF3d0tjMnQxY0hCbGNpMWpZVEFlRncweU5EQXpNVGt4TkRVeU1UVmFGdzB5T1RBegpNVGd4TkRVeU1UVmFNQjR4SERBYUJnTlZCQU1NRTNOcmRYQndaWEl0Y205MWRHVnlMWGRsYzNRd2dnRWlNQTBHCkNTcUdTSWIzRFFFQkFRVUFBNElCRHdBd2dnRUtBb0lCQVFDZml5bEVrR3dLNDdyL1dqbjE5OTViK1JKeWF0dXkKNjNTbGo5cjBjVHpNS01HejhFbnArTUxZRFhzTStKSTA4S1k5R2NRYVdTZ0FwZHZNeDR6WHNOU2RxR3dWbnU5aQpYbFhuM25pQ1BvQUpBWjZtVlhDdDNhZ2F4RlZic1ljUHlPZndlRmZrbWd1Mit6Wk9wQ1plTnIyQXdYN29FQTFSCmVwQWU5Znd6djZDUXlCTnBRNzJZaXp5Ui9KM1lWTkhLVnR3Mmp1WGJ6citqK2dzbHFDam1lSjZsMmtxRGxyMEgKa0lySnJFQXVNTjU2MDZzVStteFdnRmMyV2VEYU92TnRvNHpEb0ltcmtNUWpRMXJ4aE9XSnowczVmV3dxZ0NvUgpDaHV4enZmcHRod0xDMngrWEFNRkFXRGR5Vy9XZzdnaFh4RTBlM0x2UnJRNzM0WUpmeVdNc05SVEFnTUJBQUdqCmdkc3dnZGd3SFFZRFZSME9CQllFRkJQMXQyRWM0ZzlHSnFYbjJucmtoM2c4NEx2WU1GQUdBMVVkSXdSSk1FZUEKRk5nL3dnOWoveXFMV3Y3eVJpVVoyT1B2aCtFRm9SbWtGekFWTVJNd0VRWURWUVFEREFwemEzVndjR1Z5TFdOaApnaFFtd3dsem5vS1VNNkJXbWNrcm9VR1AzTjJOTVRBTUJnTlZIUk1FQlRBREFRSC9NQXNHQTFVZER3UUVBd0lDCi9EQXpCZ05WSFJFRUxEQXFnaE56YTNWd2NHVnlMWEp2ZFhSbGNpMTNaWE4wZ2hOemEzVndjR1Z5TFhKdmRYUmwKY2kxM1pYTjBNQlVHQTFVZEVnUU9NQXlDQ25OcmRYQndaWEl0WTJFd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQgpBSksvYUVBMTlUdWxpN2NYM1FqeEVuNFUwQlcrcmYwOTk4ZGlHM3hscm4yZWVCeUFwTWM4aXdTdm1GM0ozbWFMCjZPa1dnT2NVcDVzN1pqY1diNDF1S2sweS9TbWU0WmgvVzRXWU9CdmpEWlF6WUJreFZWY0dNUVBxMUFvdDZIaHEKZTlwWjRsR01nV0VJTlBGVmJFT1ltQkx1bG56WU9tMTE1WTZBdk42ZlBxbDJEMDRuUmJ5cjNIaXBxYWJoUkZZdgo5clViV3NtSHNPZmhrTUdzajV4RkprWmJrVC9qNy9HMnpINjJFOU53SUdmL0ZUSnNYY1I4elQ2WXIvbzVrUjVzCmFVTWNxVDhGc0NYeUVTbndjM0xXUFlrREhCM0dLOGJVVUI0MGxJZnYwblRpRVJ4VlpSQ0p0RzNmU3Q5RjNDeVEKaGl1bmVTY2lSa2NoREdHR3RaK21aTk09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBbjRzcFJKQnNDdU82LzFvNTlmZmVXL2tTY21yYnN1dDBwWS9hOUhFOHpDakJzL0JKCjZmakMyQTE3RFBpU05QQ21QUm5FR2xrb0FLWGJ6TWVNMTdEVW5haHNGWjd2WWw1VjU5NTRnajZBQ1FHZXBsVncKcmQyb0dzUlZXN0dIRDhqbjhIaFg1Sm9MdHZzMlRxUW1YamE5Z01GKzZCQU5VWHFRSHZYOE03K2drTWdUYVVPOQptSXM4a2Z5ZDJGVFJ5bGJjTm83bDI4Ni9vL29MSmFnbzVuaWVwZHBLZzVhOUI1Q0t5YXhBTGpEZWV0T3JGUHBzClZvQlhObG5nMmpyemJhT013NkNKcTVERUkwTmE4WVRsaWM5TE9YMXNLb0FxRVFvYnNjNzM2YlljQ3d0c2Zsd0QKQlFGZzNjbHYxb080SVY4Uk5IdHk3MGEwTzkrR0NYOGxqTERVVXdJREFRQUJBb0lCQUVvTkN1WCtqSTlQWFNPWgphczZlTWpDSlBrVXFFUGdPTGxHTUlDb1dCd3lSbkRxYS9JdWpBVGpMcFFJRHU4VGpyNTByZ09oajJsdlduOXNBCkFnQzQzQzZqRml2QTNjWlFGOXByMlk1R1dTSVZCT0NhUnBjRWl6cUZSME1zZG81ZWh6MEhkbkF1Q2VMdjNhaUoKcXg5T2xBMlhnZ0pQTlFkTTltalFick5NTGNnVXdQWkpZK29NVjhBUTRPRE9mWE90emZIQ20wZzlkL1ZHU1dqYgpYQWcydnB5WmtuMWFJUmEwM2VHRHhCQVpHVUtERktWQmcwYytYRjQzaDBNbXVOYkVtbHJ1YkE5alE4TmJEWVQ4CldCQjlITEdMcDFzazdoblBOM2lPOGlOR1QxQWhIU0Z4RHQwZysyMEdOdk5WWk5nSDdZTlhoYTdwRXY3WEFXa2IKZit5Y2xPVUNnWUVBM2MvanhqZlNRa2Nnb1hURjdDOVY3aVVEOW1LR2dxdTlmems1YkR5VGI5L2dGLzdHUnpsUwpvUXl0dTZKb2hmOHRRVUFDeHg2K2l3SnAzL05EKzVGVFJzRFVNODlkanN4VkZNYzBLaTZaUlpSTk1hSDF5b1lDCkxRQkJoOVcyb1RrMnBLa0kyL1Bac25tditkR0tHdC9oQXowNzRVK2IwZlVTaE1Cd21LVUJhbTBDZ1lFQXVDSlQKQ0piRGFDQVRhdnNvNEhaQTJSRG5GZGZoSEtSY2ZObHp6dm5oMDRNbUttWG40ZGkyTGg5MnJQR1NhZENQU2hBcAo1N0JhR0hyaWVyTkVDcGcwTkk5cDF2RHI2Vm5pNUlDV2xXc3UxM3VJOTVDMjFSL1BNYXgwQU5KbGJ3OFVKNUtOCkhXRHluMTFEdU1sczNFemFBOXNqaVFDTXJ5STRrQTUyTUNrWUFiOENnWUVBeWpCRkJScy9HdEV4S2x1Q1NzKy8KT1l3ZU40b0o2TFRaMEUxK1RXNU9TdTA4blVMTXhJRzVFenEyWnRJZEN2L1c1YUtPcGFrZHNTTHJGWXZ1elRMawpRUnRta3krVHJhWU9iQmxGTUtvM1pwaFBZVTJyK2diN2xyK2ovRWpQNTloNk9kQW5WaS9Lb2dpUVkxMGcwV3gvCjlHN3QxV3kyc2NUK00yb2plTkQ0SUdVQ2dZQW5nWTNKSVBlcDVuL2tDeUVaRDZZWUxHMDRIWW81NS9YRC82KysKTDVUSkdiRmRsV0dyN2lBZ1F6WG1JeXBqczVDYXRsOFhTNW40K0p5UThOZGZZb3FJNEdBMzhwYmJDU01LSGFDeApURDdQa3J5dlNRaEJMOEwzaUdXWEs0MEJ4LzF1QkI1c3VEazJBZitlclBERFQyWFRQL2dlMDlSYld2OUJ3U2lRCmFyQ3c1d0tCZ0EzaEpWMWExNHliOUpIMUxMQVk0NjRyYXl5cnh1ZldBcUdjR1B6bU9YSkFNZFpnZExBdVNLalEKSUFQUEcvMVlXdURxK29acjBmZ1Zqbzl5Z3l1bmFlTnFjd00xejhwZkl0T0gvTkZDSzR2d01YZUF3bHpvb3d6MQo3dWVQTVZvYlAzeVZuVXZ1K3Bld1RJSWNUZG9hWUpadW5Eb0Q5YlIzZ1hQUGNJUjN4SWc0Ci0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2024-03-19T13:52:20Z"
+  labels:
+    app: skupper-router-west-pod
+  name: skupper-router-west-pod
+spec:
+  containers:
+  - env:
+    - name: QDROUTERD_CONF
+      value: /etc/skupper-router/config/skrouterd.json
+    - name: QDROUTERD_CONF_TYPE
+      value: json
+    image: quay.io/skupper/skupper-router:main
+    name: skupper-router-west
+    volumeMounts:
+    - mountPath: /etc/skupper-router/config/
+      name: skupper-router-west-config
+    - mountPath: /etc/skupper-router-certs/skupper-west-certs/
+      name: skupper-west-certs
+  restartPolicy: Always
+  volumes:
+  - name: skupper-router-west-config
+    configMap:
+      defaultMode: 420
+      name: skupper-router-west-config
+  - name: skupper-west-certs
+    secret:
+      defaultMode: 420
+      secretName: skupper-west-certs
+---

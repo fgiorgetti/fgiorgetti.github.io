@@ -6,8 +6,62 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>Fernando Giorgetti</copyright>
-        <lastBuildDate>Tue, 19 Mar 2024 10:19:00 -0300</lastBuildDate>
+        <lastBuildDate>Wed, 20 Mar 2024 09:14:27 -0300</lastBuildDate>
         <atom:link href="https://fgiorgetti.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Running skupper-router containers with compose</title>
+            <link>https://fgiorgetti.github.io/posts/20240320-router-with-compose/</link>
+            <pubDate>Wed, 20 Mar 2024 09:14:27 -0300</pubDate>
+            
+            <guid>https://fgiorgetti.github.io/posts/20240320-router-with-compose/</guid>
+            <description>A compose file can also be an interesting way to run a static bundle for skupper-routers. Here I am using a two routers network, named west and east.
+The west router has an inter-router link (secured with TLS) defined to connect with the east one (using skupper-router-east hostname).
+All the configuration files, sample certificates and compose files can be downloaded by clicking the following link: Example files (tarball).
+Once you extract the tarball, you will fine a new directory named example which contains the compose.</description>
+            <content type="html"><![CDATA[<p>A compose file can also be an interesting way to run a static bundle for skupper-routers.
+Here I am using a two routers network, named west and east.</p>
+<p>The west router has an inter-router link (secured with TLS) defined to connect with the
+east one (using skupper-router-east hostname).</p>
+<p>All the configuration files, sample certificates and compose files can be downloaded by clicking
+the following link: <a href="example.tar.gz">Example files (tarball)</a>.</p>
+<p>Once you extract the tarball, you will fine a new directory named example which contains
+the <code>compose.yaml</code> file, as well as all the configuration needed by the two routers under
+<code>./example/west</code> and <code>./example/east</code>.</p>
+<p>This <code>compose.yaml</code> file, works with both docker and podman.</p>
+<p>To deploy this multi-container scenario, run:</p>
+<table>
+<thead>
+<tr>
+<th>Docker</th>
+<th>Podman</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>docker compose up -d</td>
+<td>podman-compose up -d</td>
+</tr>
+</tbody>
+</table>
+<p>To teardown this multi-container scenario, run:</p>
+<table>
+<thead>
+<tr>
+<th>Docker</th>
+<th>Podman</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>docker compose down</td>
+<td>podman-compose down</td>
+</tr>
+</tbody>
+</table>
+<p><em><strong>Note:</strong></em> To install <code>podman-compose</code>, follow the <a href="https://github.com/containers/podman-compose?tab=readme-ov-file#installation">official instructions</a>.</p>
+]]></content>
+        </item>
         
         <item>
             <title>Playing with kube files using Podman</title>

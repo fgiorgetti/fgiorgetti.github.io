@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>docker-compose on Fernando Giorgetti - about me</title>
+    <link>https://fgiorgetti.github.io/tags/docker-compose/</link>
+    <description>Recent content in docker-compose on Fernando Giorgetti - about me</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Fernando Giorgetti</copyright>
+    <lastBuildDate>Wed, 20 Mar 2024 09:14:27 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/docker-compose/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Running skupper-router containers with compose</title>
+      <link>https://fgiorgetti.github.io/posts/20240320-router-with-compose/</link>
+      <pubDate>Wed, 20 Mar 2024 09:14:27 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/posts/20240320-router-with-compose/</guid>
+      <description>A compose file can also be an interesting way to run a static bundle for skupper-routers. Here I am using a two routers network, named west and east.
+The west router has an inter-router link (secured with TLS) defined to connect with the east one (using skupper-router-east hostname).
+All the configuration files, sample certificates and compose files can be downloaded by clicking the following link: Example files (tarball).
+Once you extract the tarball, you will fine a new directory named example which contains the compose.</description>
+    </item>
+    
+  </channel>
+</rss>

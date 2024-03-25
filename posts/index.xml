@@ -65,9 +65,9 @@ choice.</p>
 <h2 id="artifacts-for-evaluation">Artifacts for evaluation</h2>
 <p>You can download and evaluate each of the approaches through the following links.
 These samples can be run using <code>docker compose</code> or <code>podman-compose</code>.</p>
-<p><a href="netfilter.tar.gz">1. Netfilter</a></p>
-<p><a href="edgerouter.tar.gz">2. Edge-Router</a></p>
-<p><a href="haproxy.tar.gz">3. HAProxy</a></p>
+<p><a href="resources/netfilter.tar.gz">1. Netfilter</a></p>
+<p><a href="resources/edgerouter.tar.gz">2. Edge-Router</a></p>
+<p><a href="resources/haproxy.tar.gz">3. HAProxy</a></p>
 <h2 id="validating-each-scenario">Validating each scenario</h2>
 <table>
 <thead>

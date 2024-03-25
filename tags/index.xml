@@ -7,13 +7,94 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Fernando Giorgetti</copyright>
-    <lastBuildDate>Wed, 20 Mar 2024 09:14:27 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 22 Mar 2024 16:19:33 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>compose</title>
+      <link>https://fgiorgetti.github.io/tags/compose/</link>
+      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/tags/compose/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>docker</title>
       <link>https://fgiorgetti.github.io/tags/docker/</link>
-      <pubDate>Wed, 20 Mar 2024 09:14:27 -0300</pubDate>
+      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
       
       <guid>https://fgiorgetti.github.io/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>edge</title>
+      <link>https://fgiorgetti.github.io/tags/edge/</link>
+      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/tags/edge/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>edge-router</title>
+      <link>https://fgiorgetti.github.io/tags/edge-router/</link>
+      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/tags/edge-router/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>haproxy</title>
+      <link>https://fgiorgetti.github.io/tags/haproxy/</link>
+      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/tags/haproxy/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>iptables</title>
+      <link>https://fgiorgetti.github.io/tags/iptables/</link>
+      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/tags/iptables/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>netfilter</title>
+      <link>https://fgiorgetti.github.io/tags/netfilter/</link>
+      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/tags/netfilter/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>podman</title>
+      <link>https://fgiorgetti.github.io/tags/podman/</link>
+      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/tags/podman/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>skupper</title>
+      <link>https://fgiorgetti.github.io/tags/skupper/</link>
+      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/tags/skupper/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>skupper-router</title>
+      <link>https://fgiorgetti.github.io/tags/skupper-router/</link>
+      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/tags/skupper-router/</guid>
       <description></description>
     </item>
     
@@ -27,38 +108,11 @@
     </item>
     
     <item>
-      <title>podman</title>
-      <link>https://fgiorgetti.github.io/tags/podman/</link>
-      <pubDate>Wed, 20 Mar 2024 09:14:27 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/podman/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>podman-compose</title>
       <link>https://fgiorgetti.github.io/tags/podman-compose/</link>
       <pubDate>Wed, 20 Mar 2024 09:14:27 -0300</pubDate>
       
       <guid>https://fgiorgetti.github.io/tags/podman-compose/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>skupper</title>
-      <link>https://fgiorgetti.github.io/tags/skupper/</link>
-      <pubDate>Wed, 20 Mar 2024 09:14:27 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/skupper/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>skupper-router</title>
-      <link>https://fgiorgetti.github.io/tags/skupper-router/</link>
-      <pubDate>Wed, 20 Mar 2024 09:14:27 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/skupper-router/</guid>
       <description></description>
     </item>
     

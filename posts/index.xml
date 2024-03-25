@@ -6,8 +6,110 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>Fernando Giorgetti</copyright>
-        <lastBuildDate>Wed, 20 Mar 2024 09:14:27 -0300</lastBuildDate>
+        <lastBuildDate>Fri, 22 Mar 2024 16:19:33 -0300</lastBuildDate>
         <atom:link href="https://fgiorgetti.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Skupper service ingress through containers</title>
+            <link>https://fgiorgetti.github.io/posts/20240322-skupper-podman-ingresses/</link>
+            <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
+            
+            <guid>https://fgiorgetti.github.io/posts/20240322-skupper-podman-ingresses/</guid>
+            <description>Introduction In order to evaluate some strategies for dealing with service ingresses, when running the skupper-router with Podman or Docker, I have used this simple scenario below:
+The router component is connect to the host network, which avoids restarts when extra ports need to be bound.
+In this topology, the my-service workload is reachable from the container&amp;rsquo;s host machine.
+It is exposed through the skupper-router container, which is binding port 8080 on the host machine.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>In order to evaluate some strategies for dealing with service ingresses,
+when running the skupper-router with Podman or Docker, I have used this simple
+scenario below:</p>
+<p><img src="images/scenario.png" alt=""></p>
+<p>The router component is connect to the host network, which avoids restarts
+when extra ports need to be bound.</p>
+<p>In this topology, the <em>my-service</em> workload is reachable from the container&rsquo;s
+host machine.</p>
+<p>It is exposed through the <em>skupper-router</em> container, which is binding
+port <em>8080</em> on the host machine.</p>
+<p>Another container named <em>my-service</em> (for illustration only) is also created
+and it can be connected to multiple other container (bridge) networks, in order
+to provide a stable name resolution to other containers connected to those container networks.</p>
+<p>This extra container is also listening to port 8080 (in all its interfaces) and
+it has the <em>my-service</em> alias on all container networks it is connected with.</p>
+<p>To enable name resolution inside the container network, I have explored three initial
+scenarios that allow traffic reaching the <em>my-service</em> container on port <em>8080</em> to
+actually reach the exposed workload through the <em>skupper-router</em>, which is actually
+listening port 8888.</p>
+<h2 id="scenarios">Scenarios</h2>
+<ol>
+<li>Netfilter rules to redirect packets to the appropriate target</li>
+<li>An edge-router that exposes tcpListeners to the appropriate addresses</li>
+<li>HA proxy as a reverse-proxy</li>
+</ol>
+<h3 id="1-netfilter">1. Netfilter</h3>
+<p>Using Netfilter, we can simply add rules to redirect incoming packets reaching the
+service port (8080) to the <em>skupper_router</em> ingress IP and Port, forcing the traffic to
+go through the router, which is important for observability.</p>
+<p>This is extremely simple and the fastest choice.</p>
+<h3 id="2-edge-router">2. Edge-router</h3>
+<p>An edge-router can also be used, as we just need to expose a tcpListener bound to the
+service port (8080) and it will use the connector address to ensure data reaches the
+target workload.</p>
+<p>This approach has an extra benefit as you don&rsquo;t need to expose the service to the
+container&rsquo;s host network, because it does not need a target IP and Port. On the other
+hand we introduce an extra hop.</p>
+<h3 id="3-haproxy">3. HAProxy</h3>
+<p>The HAProxy can be configured as a reverse proxy, forwarding packets to the router
+ingress IP and Port. In the end it is similar to the Netfilter approach, but it requires
+an extra hop processing the packets as well, so this is possibly the least recommended
+choice.</p>
+<h2 id="artifacts-for-evaluation">Artifacts for evaluation</h2>
+<p>You can download and evaluate each of the approaches through the following links.
+These samples can be run using <code>docker compose</code> or <code>podman-compose</code>.</p>
+<p><a href="netfilter.tar.gz">1. Netfilter</a></p>
+<p><a href="edgerouter.tar.gz">2. Edge-Router</a></p>
+<p><a href="haproxy.tar.gz">3. HAProxy</a></p>
+<h2 id="validating-each-scenario">Validating each scenario</h2>
+<table>
+<thead>
+<tr>
+<th>Container engine</th>
+<th>Deploy</th>
+<th>Teardown</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Podman</td>
+<td>podman-compose up -d</td>
+<td>podman-compose down</td>
+</tr>
+<tr>
+<td>Docker</td>
+<td>docker compose up -d</td>
+<td>docker compose down</td>
+</tr>
+</tbody>
+</table>
+<p>For each scenario, you can validate that you&rsquo;re able to access the target service through
+Host&rsquo;s port 8080 as well as through the container&rsquo;s bridge network (<em>sample_sample1</em>) via my-service:8080.</p>
+<p>Here is how:</p>
+<ol>
+<li>Access through the host</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl http://0.0.0.0:8080
+</span></span></code></pre></div><ol start="2">
+<li>Access through the container&rsquo;s bridge network</li>
+</ol>
+<p>First adjust the value of the CONTAINER variable to the container engine being used (podman or docker).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>CONTAINER<span style="color:#f92672">=</span>podman
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">${</span>CONTAINER<span style="color:#e6db74">}</span> run --rm --network sample_sample1 curlimages/curl http://my-service:8080
+</span></span></code></pre></div><h2 id="conclusion">Conclusion</h2>
+<p>If requiring a host&rsquo;s IP/Port to be exposed is not a problem, the Netfilter approach
+seems like the best fit.</p>
+<p>But in case exposing only into the container&rsquo;s network without exposing it through the host
+is a requirement, then Edge-router is the only choice that can be used.</p>
+]]></content>
+        </item>
         
         <item>
             <title>Running skupper-router containers with compose</title>

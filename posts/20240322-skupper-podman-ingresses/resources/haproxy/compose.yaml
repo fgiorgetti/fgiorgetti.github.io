@@ -1,0 +1,24 @@
+name: sample
+services:
+  skupper-router:
+    image: quay.io/skupper/skupper-router:main
+    volumes:
+      - ./config:/etc/skupper-router/config:z
+    environment:
+      QDROUTERD_CONF: "/etc/skupper-router/config/skrouterd.json"
+      QDROUTERD_CONF_TYPE: "json"
+    network_mode: host
+  my-service:
+    image: quay.io/fgiorgetti/skupper-service-proxy
+    environment:
+      PORT_MAPPING: "8080:host.docker.internal:8080"
+    networks:
+      - sample1
+    extra_hosts:
+      - host.docker.internal:host-gateway
+  my-service-workload:
+    image: nginxinc/nginx-unprivileged:stable-alpine
+    ports:
+      - 8888:8080
+networks:
+  sample1:

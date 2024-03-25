@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>haproxy on Fernando Giorgetti - about me</title>
+    <link>https://fgiorgetti.github.io/tags/haproxy/</link>
+    <description>Recent content in haproxy on Fernando Giorgetti - about me</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Fernando Giorgetti</copyright>
+    <lastBuildDate>Fri, 22 Mar 2024 16:19:33 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/haproxy/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Skupper service ingress through containers</title>
+      <link>https://fgiorgetti.github.io/posts/20240322-skupper-podman-ingresses/</link>
+      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
+      
+      <guid>https://fgiorgetti.github.io/posts/20240322-skupper-podman-ingresses/</guid>
+      <description>Introduction In order to evaluate some strategies for dealing with service ingresses, when running the skupper-router with Podman or Docker, I have used this simple scenario below:
+The router component is connect to the host network, which avoids restarts when extra ports need to be bound.
+In this topology, the my-service workload is reachable from the container&amp;rsquo;s host machine.
+It is exposed through the skupper-router container, which is binding port 8080 on the host machine.</description>
+    </item>
+    
+  </channel>
+</rss>

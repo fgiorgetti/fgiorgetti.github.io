@@ -1,0 +1,61 @@
+[
+    [
+        "router",
+        {
+            "id": "east",
+            "mode": "interior",
+            "helloMaxAgeSeconds": "3"
+        }
+    ],
+    [
+        "listener",
+        {
+            "name": "edges",
+            "host": "0.0.0.0",
+            "port": 45671,
+            "role": "edge"
+        }
+    ],
+    [
+        "listener",
+        {
+            "name": "mesh-of-edges",
+            "host": "0.0.0.0",
+            "port": 35671,
+            "role": "inter-edge"
+        }
+    ],
+    [
+        "tcpListener",
+        {
+            "name": "my-service:8080@0.0.0.0:8080",
+            "host": "0.0.0.0",
+            "port": 8080,
+            "address": "my-service:8080"
+        }
+    ],
+    [
+        "tcpConnector",
+        {
+            "name": "my-service:8080-to-localhost:8888",
+            "host": "localhost",
+            "port": 8888,
+            "address": "my-service:8080"
+        }
+    ],
+    [
+        "address",
+        {
+            "prefix": "mc",
+            "distribution": "multicast"
+        }
+    ],
+    [
+        "log",
+        {
+            "module": "ROUTER_CORE",
+            "enable": "error+"
+        }
+    ]
+]
+

@@ -1,0 +1,41 @@
+[
+    [
+        "router",
+        {
+            "id": "my-tcp-service",
+            "mode": "edge",
+            "helloMaxAgeSeconds": "3"
+        }
+    ],
+    [
+        "connector",
+        {
+            "host": "host.docker.internal",
+            "port": 45671,
+            "role": "edge"
+        }
+    ],
+    [
+        "tcpListener",
+        {
+            "name": "my-tcp-service:5201",
+            "port": 5201,
+            "address": "my-tcp-service:5201"
+        }
+    ],
+    [
+        "address",
+        {
+            "prefix": "mc",
+            "distribution": "multicast"
+        }
+    ],
+    [
+        "log",
+        {
+            "module": "ROUTER_CORE",
+            "enable": "error+"
+        }
+    ]
+]
+

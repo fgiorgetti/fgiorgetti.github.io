@@ -22,9 +22,27 @@ services:
       - host.docker.internal:host-gateway
     networks:
       - sample1
+  my-tcp-service:
+    container_name: my-tcp-service
+    image: quay.io/skupper/skupper-router:main
+    volumes:
+      - ./config-tcp-proxy:/etc/skupper-router/config:z
+    environment:
+      QDROUTERD_CONF: "/etc/skupper-router/config/skrouterd.json"
+      QDROUTERD_CONF_TYPE: "json"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    networks:
+      - sample1
   my-service-workload:
     image: nginxinc/nginx-unprivileged:stable-alpine
     ports:
       - 8888:8080
+  my-tcp-service-workload:
+    image: quay.io/skupper/iperf3
+    ports:
+      - 4201:5201
+    command:
+      - -s
 networks:
   sample1:

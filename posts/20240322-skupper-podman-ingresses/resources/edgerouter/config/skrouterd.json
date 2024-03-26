@@ -44,6 +44,24 @@
         }
     ],
     [
+        "tcpListener",
+        {
+            "name": "my-tcp-service:5201@0.0.0.0:5201",
+            "host": "0.0.0.0",
+            "port": 5201,
+            "address": "my-tcp-service:5201"
+        }
+    ],
+    [
+        "tcpConnector",
+        {
+            "name": "my-tcp-service:5201-to-localhost:4201",
+            "host": "localhost",
+            "port": 4201,
+            "address": "my-tcp-service:5201"
+        }
+    ],
+    [
         "address",
         {
             "prefix": "mc",

@@ -9,27 +9,29 @@ services:
       QDROUTERD_CONF_TYPE: "json"
     network_mode: host
   my-service:
-    image: quay.io/fgiorgetti/skupper-firewall-proxy
-    environment:
-      PORT_MAPPING: "8080:host.docker.internal:8080"
+    image: docker.io/envoyproxy/envoy:v1.29.2
     networks:
       - sample1
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
     extra_hosts:
       - host.docker.internal:host-gateway
+    volumes:
+      - ./my-service/envoy.yaml:/tmp/envoy.yaml
+    command:
+      - -c /tmp/envoy.yaml
+    security_opt:
+      - label:disable
   my-tcp-service:
-    image: quay.io/fgiorgetti/skupper-firewall-proxy
-    environment:
-      PORT_MAPPING: "5201:host.docker.internal:5201"
+    image: docker.io/envoyproxy/envoy:v1.29.2
     networks:
       - sample1
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
     extra_hosts:
       - host.docker.internal:host-gateway
+    volumes:
+      - ./my-tcp-service/envoy.yaml:/tmp/envoy.yaml
+    command:
+      - -c /tmp/envoy.yaml
+    security_opt:
+      - label:disable
   my-service-workload:
     image: nginxinc/nginx-unprivileged:stable-alpine
     ports:

@@ -16,9 +16,23 @@ services:
       - sample1
     extra_hosts:
       - host.docker.internal:host-gateway
+  my-tcp-service:
+    image: quay.io/fgiorgetti/skupper-service-proxy
+    environment:
+      PORT_MAPPING: "5201:host.docker.internal:5201"
+    networks:
+      - sample1
+    extra_hosts:
+      - host.docker.internal:host-gateway
   my-service-workload:
     image: nginxinc/nginx-unprivileged:stable-alpine
     ports:
       - 8888:8080
+  my-tcp-service-workload:
+    image: quay.io/skupper/iperf3
+    ports:
+      - 4201:5201
+    command:
+      - -s
 networks:
   sample1:

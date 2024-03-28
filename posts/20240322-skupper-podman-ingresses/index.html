@@ -5,10 +5,10 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="Introduction In order to evaluate some strategies for dealing with service ingresses, when running the skupper-router with Podman or Docker, I have used the simple scenario below as the foundation for this study:
-The router component is connect to the host network, which avoids restarts when extra ports need to be bound.
-In this topology we have two workloads.
-my-service - nginx server my-tcp-service - iperf3 server They are exposed through the skupper-router container, which is binding ports 8080 (for nginx) and 5201 (for iperf3) on the host machine." />
+<meta name="description" content="Introduction In order to evaluate some strategies for dealing with ingresses using a stable name resolution within a container network (Podman or Docker), I have used the following scenario as the foundation for this study:
+In the following sections, I will describe each component in more detail.
+Artifacts for each strategy are also available and they can be easily executed using podman-compose or docker compose.
+Service Proxies The service proxies are the main objects to be explored here." />
 <meta name="keywords" content="software, skupper, skupper-router, podman, docker, compose, netfilter, iptables, edge, edge-router, haproxy, envoyproxy, iperf3" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -42,27 +42,27 @@ my-service - nginx server my-tcp-service - iperf3 server They are exposed throug
 
 
 <meta itemprop="name" content="Skupper service ingress through containers">
-<meta itemprop="description" content="Introduction In order to evaluate some strategies for dealing with service ingresses, when running the skupper-router with Podman or Docker, I have used the simple scenario below as the foundation for this study:
-The router component is connect to the host network, which avoids restarts when extra ports need to be bound.
-In this topology we have two workloads.
-my-service - nginx server my-tcp-service - iperf3 server They are exposed through the skupper-router container, which is binding ports 8080 (for nginx) and 5201 (for iperf3) on the host machine."><meta itemprop="datePublished" content="2024-03-22T16:19:33-03:00" />
+<meta itemprop="description" content="Introduction In order to evaluate some strategies for dealing with ingresses using a stable name resolution within a container network (Podman or Docker), I have used the following scenario as the foundation for this study:
+In the following sections, I will describe each component in more detail.
+Artifacts for each strategy are also available and they can be easily executed using podman-compose or docker compose.
+Service Proxies The service proxies are the main objects to be explored here."><meta itemprop="datePublished" content="2024-03-22T16:19:33-03:00" />
 <meta itemprop="dateModified" content="2024-03-22T16:19:33-03:00" />
-<meta itemprop="wordCount" content="724">
+<meta itemprop="wordCount" content="1069">
 <meta itemprop="keywords" content="skupper,skupper-router,podman,docker,compose,netfilter,iptables,edge,edge-router,haproxy,envoyproxy,iperf3," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Skupper service ingress through containers"/>
-<meta name="twitter:description" content="Introduction In order to evaluate some strategies for dealing with service ingresses, when running the skupper-router with Podman or Docker, I have used the simple scenario below as the foundation for this study:
-The router component is connect to the host network, which avoids restarts when extra ports need to be bound.
-In this topology we have two workloads.
-my-service - nginx server my-tcp-service - iperf3 server They are exposed through the skupper-router container, which is binding ports 8080 (for nginx) and 5201 (for iperf3) on the host machine."/>
+<meta name="twitter:description" content="Introduction In order to evaluate some strategies for dealing with ingresses using a stable name resolution within a container network (Podman or Docker), I have used the following scenario as the foundation for this study:
+In the following sections, I will describe each component in more detail.
+Artifacts for each strategy are also available and they can be easily executed using podman-compose or docker compose.
+Service Proxies The service proxies are the main objects to be explored here."/>
 
 
 
     <meta property="og:title" content="Skupper service ingress through containers" />
-<meta property="og:description" content="Introduction In order to evaluate some strategies for dealing with service ingresses, when running the skupper-router with Podman or Docker, I have used the simple scenario below as the foundation for this study:
-The router component is connect to the host network, which avoids restarts when extra ports need to be bound.
-In this topology we have two workloads.
-my-service - nginx server my-tcp-service - iperf3 server They are exposed through the skupper-router container, which is binding ports 8080 (for nginx) and 5201 (for iperf3) on the host machine." />
+<meta property="og:description" content="Introduction In order to evaluate some strategies for dealing with ingresses using a stable name resolution within a container network (Podman or Docker), I have used the following scenario as the foundation for this study:
+In the following sections, I will describe each component in more detail.
+Artifacts for each strategy are also available and they can be easily executed using podman-compose or docker compose.
+Service Proxies The service proxies are the main objects to be explored here." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://fgiorgetti.github.io/posts/20240322-skupper-podman-ingresses/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2024-03-22T16:19:33-03:00" />
@@ -140,7 +140,7 @@ my-service - nginx server my-tcp-service - iperf3 server They are exposed throug
           <circle cx="12" cy="12" r="10"></circle>
           <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
-        4 minutes
+        6 minutes
 
         
       </p>
@@ -159,8 +159,14 @@ my-service - nginx server my-tcp-service - iperf3 server They are exposed throug
           <div class="toc-title">Table of Contents</div>
           <nav id="TableOfContents">
   <ul>
-    <li><a href="#introduction">Introduction</a></li>
-    <li><a href="#scenarios">Scenarios</a>
+    <li><a href="#introduction">Introduction</a>
+      <ul>
+        <li><a href="#service-proxies">Service Proxies</a></li>
+        <li><a href="#skupper-router">Skupper Router</a></li>
+        <li><a href="#workloads">Workloads</a></li>
+      </ul>
+    </li>
+    <li><a href="#service-proxy-scenarios">Service proxy scenarios</a>
       <ul>
         <li><a href="#1-netfilter">1. Netfilter</a></li>
         <li><a href="#2-edge-router">2. Edge-router</a></li>
@@ -185,28 +191,77 @@ my-service - nginx server my-tcp-service - iperf3 server They are exposed throug
 
       <div class="post-content">
         <h2 id="introduction">Introduction</h2>
-<p>In order to evaluate some strategies for dealing with service ingresses,
-when running the skupper-router with Podman or Docker, I have used the simple
-scenario below as the foundation for this study:</p>
+<p>In order to evaluate some strategies for dealing with ingresses using a stable
+name resolution within a container network (Podman or Docker), I have used the
+following scenario as the foundation for this study:</p>
 <p><img src="images/scenario.png" alt=""></p>
-<p>The router component is connect to the host network, which avoids restarts
-when extra ports need to be bound.</p>
+<p>In the following sections, I will describe each component in more detail.</p>
+<p>Artifacts for each strategy are also available and they can be easily executed
+using <em>podman-compose</em> or <em>docker compose</em>.</p>
+<h3 id="service-proxies">Service Proxies</h3>
+<p>The service proxies are the main objects to be explored here.</p>
+<p>Each service proxy is connected to a container network, and so they have a stable
+name and an individual IP address within that network. With that, each proxy container
+could bind port 8080 (as an example), because they&rsquo;d have different IP addresses.</p>
+<p>And this is the reason why we do not have a single proxy container with multiple
+network aliases. Having multiple network aliases would solve the stable name issue,
+but wouldn&rsquo;t allow two distinct names to bind the same port with different targets.</p>
+<p>That being said, each proxy container will be responsible for redirecting incoming traffic
+reaching its port(s) to the <em>skupper-router</em> (explained later).</p>
+<p>In this study we will evaluate different approaches that can be used to redirect
+incoming traffic reaching the service proxies to the <em>skupper-router</em>.</p>
+<p>Basically all the scenarios will use different approaches to redirect traffic to the listeners
+exposed by the <em>skupper_router</em>, except for the <em>Edge-Router</em> scenario, in which the service proxies
+are edge-routers connected to the <em>skupper-router</em> and they expose a <em>TCP Listener</em> themselves.
+These <em>TCP Listeners</em> take the incoming traffic through the <em>skupper-router</em> via its
+<em>Edge Link</em> with <em>skupper-router</em>, so the <em>TCP Listeners</em> exposed by the <em>skupper-router</em>
+are not used.</p>
+<h3 id="skupper-router">Skupper Router</h3>
+<p>The <em>skupper-router</em> component is connect to the host network, exposing TCP listeners
+on ports <em>8080</em> and <em>5201</em>, which have related TCP connectors reaching the <em>workloads</em>,
+that are also running as containers, exposing their ports to the host network.</p>
+<p>It is important to say that this is not an appropriate scenario for Skupper itself, as
+Skupper&rsquo;s purpose is to interconnect services distributed through the hybrid cloud, but
+we are using it here to prove that we can get traffic from a service proxy redirected to
+the <em>skupper-router</em> and forwarded by the router to the respective <em>workloads</em>.</p>
+<p>In the <em>Edge-Router</em> scenario, the <em>skupper-router</em> also exposes an <em><strong>Edge</strong></em> listener
+through port 45671. This listener is used by the <em>service proxies</em> only in this scenario.</p>
+<h3 id="workloads">Workloads</h3>
 <p>In this topology we have two workloads.</p>
 <ul>
 <li><em>my-service</em> - nginx server</li>
 <li><em>my-tcp-service</em> - iperf3 server</li>
 </ul>
-<p>They are exposed through the <em>skupper-router</em> container, which is binding
-ports <em>8080</em> (for nginx) and <em>5201</em> (for iperf3) on the host machine.</p>
-<p>Other two containers named respectively <em>my-service</em> and <em>my-tcp-service</em> (for
-illustration only) are also created and they are connected to the sample_sample1 (bridge) network,
-in order to provide stable name resolution to other containers connected to that
-same network. But in theory they could be connected to multiple bridge networks.</p>
-<p>These extra containers are also listening to the same ports (8080 and 5201) and
-their names can be resolved as <em>my-service</em> and <em>my-tcp-service</em> respectively.</p>
-<p>To enable traffic to flow through these containers that are providing name resolution inside
-the container network, I have explored four initial scenarios, described in more detail below.</p>
-<h2 id="scenarios">Scenarios</h2>
+<p>These workloads also run as containers and their ports exposed through the host machine and
+mapping incoming traffic to the appropriate port used by the workload itself, here is the mapping:</p>
+<ul>
+<li><em>my-service</em> - Host port 8888 to container port 8080</li>
+<li><em>my-tcp-service</em> - Host port 4201 to container port 5201</li>
+</ul>
+<p>The <em>skupper-router</em> container has two TCP Connectors, one for each port, and the connectors
+use the following configuration:</p>
+<table>
+<thead>
+<tr>
+<th>Target host</th>
+<th>Target port</th>
+<th>Routing key (address)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>host.docker.internal</td>
+<td>8888</td>
+<td>my-service:8080</td>
+</tr>
+<tr>
+<td>host.docker.internal</td>
+<td>4201</td>
+<td>my-tcp-service:5201</td>
+</tr>
+</tbody>
+</table>
+<h2 id="service-proxy-scenarios">Service proxy scenarios</h2>
 <ol>
 <li>Netfilter / iptables</li>
 <li>Edge-router</li>
@@ -221,10 +276,12 @@ host ports that are bound by the <em>skupper-router</em>.</p>
 to be the fastest choice with minimal resource utilization, compared to the other approaches.</p>
 <h3 id="2-edge-router">2. Edge-router</h3>
 <p>An edge-router can also be used, as we just need to expose a tcpListener on each container
-with the respective router address that will reach the target workloads.</p>
-<p>This approach has an extra benefit (to be evaluated) as you don&rsquo;t need to expose the service to the
-container&rsquo;s host network (no listener needed on the <em>skupper-router</em>), because it does not need a target
+with the respective routing key (address) that will reach the target workloads.</p>
+<p>This approach has an extra benefit (to be evaluated) as you don&rsquo;t need to expose the workloads to the
+container&rsquo;s host network (no TCP listener needed on the <em>skupper-router</em>), because it does not need a target
 IP and Port.</p>
+<p>Each service proxy runs as an edge-router and has an edge link to the <em>skupper-router</em>, which
+targets host: host.docker.internal and port 45671.</p>
 <h3 id="3-haproxy">3. HAProxy</h3>
 <p>The HAProxy can be configured as a reverse proxy, forwarding packets to the router
 ingress IP and Port. HAProxy is also used by Openshift to provide Route ingress.</p>
@@ -299,10 +356,10 @@ you could also use:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>CONTAINER<span style="color:#f92672">=</span>podman
 </span></span><span style="display:flex;"><span><span style="color:#e6db74">${</span>CONTAINER<span style="color:#e6db74">}</span> run --rm --network sample_sample1 quay.io/skupper/iperf3 -c my-tcp-service
 </span></span></code></pre></div><h2 id="conclusion">Conclusion</h2>
-<p>If requiring a host&rsquo;s IP/Port to be exposed is not a problem, the Netfilter approach
-seems like the best fit.</p>
-<p>But in case exposing only into the container&rsquo;s network without exposing it through the host
-is a requirement, then Edge-router is the only choice that can be used.</p>
+<p>If requiring a host&rsquo;s IP/Port to be exposed is not a problem, the Netfilter/iptables approach
+seems like the best fit as it requires few resources and seems to have best throughput.</p>
+<p>But in case exposing workloads only into the container&rsquo;s network, without exposing them through the
+host&rsquo;s IP and Port, is a mandatory thing, then Edge-router is the only choice that can be used.</p>
 <p>As an upcoming activity, it would be really interesting to do a performance analysis, comparing all the
 approaches mentioned here using both TCP (iperf3) and HTTP traffic.</p>
 
@@ -341,7 +398,7 @@ approaches mentioned here using both TCP (iperf3) and HTTP traffic.</p>
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        724 Words
+        1069 Words
       </p>
 
       <p>

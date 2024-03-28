@@ -14,10 +14,10 @@
       <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
       
       <guid>https://fgiorgetti.github.io/posts/20240322-skupper-podman-ingresses/</guid>
-      <description>Introduction In order to evaluate some strategies for dealing with service ingresses, when running the skupper-router with Podman or Docker, I have used the simple scenario below as the foundation for this study:
-The router component is connect to the host network, which avoids restarts when extra ports need to be bound.
-In this topology we have two workloads.
-my-service - nginx server my-tcp-service - iperf3 server They are exposed through the skupper-router container, which is binding ports 8080 (for nginx) and 5201 (for iperf3) on the host machine.</description>
+      <description>Introduction In order to evaluate some strategies for dealing with ingresses using a stable name resolution within a container network (Podman or Docker), I have used the following scenario as the foundation for this study:
+In the following sections, I will describe each component in more detail.
+Artifacts for each strategy are also available and they can be easily executed using podman-compose or docker compose.
+Service Proxies The service proxies are the main objects to be explored here.</description>
     </item>
     
   </channel>

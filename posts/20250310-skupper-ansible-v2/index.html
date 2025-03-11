@@ -326,8 +326,8 @@ appropriate Kubernetes cluster.</li>
 </li>
 </ol>
 <p>If you want to clean things up, you can delete the: <code>west</code>, <code>east</code> and <code>skupper</code> namespaces.</p>
-<pre tabindex="0"><code>kubectl delete namespace west east skupper
-</code></pre><h2 id="summary">Summary</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl delete namespace west east skupper
+</span></span></code></pre></div><h2 id="summary">Summary</h2>
 <p><a href="https://skupper.io/v2/">Skupper</a> simplifies the connection of your applications using secure mTLS links between Skupper sites, eliminating the need for elevated privileges or network modifications.</p>
 <p>This new version standardizes the Virtual Application Network (VAN) definition, enabling you to declare your VAN in advance, precisely specifying what is exposed internally within the VAN and where each workload will be consumed.</p>
 <p>The <a href="https://galaxy.ansible.com/ui/repo/published/skupper/v2/"><strong>skupper.v2</strong> Ansible collection</a> streamlines the definition of Skupper resources, regardless of the target platform for your Skupper site, offering a highly convenient mechanism to link sites—regardless of VAN size—while reducing significant effort and maintaining consistency across your VAN.</p>

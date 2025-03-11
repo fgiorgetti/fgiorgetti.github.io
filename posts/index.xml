@@ -1,13 +1,168 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Posts on Fernando Giorgetti - about me</title>
+        <title>Posts on Fernando Giorgetti - blog</title>
         <link>https://fgiorgetti.github.io/posts/</link>
-        <description>Recent content in Posts on Fernando Giorgetti - about me</description>
+        <description>Recent content in Posts on Fernando Giorgetti - blog</description>
         <generator>Hugo -- gohugo.io</generator>
-        <language>en-us</language>
+        <language>en</language>
         <copyright>Fernando Giorgetti</copyright>
-        <lastBuildDate>Fri, 22 Mar 2024 16:19:33 -0300</lastBuildDate>
+        <lastBuildDate>Mon, 10 Mar 2025 17:11:45 -0300</lastBuildDate>
         <atom:link href="https://fgiorgetti.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Maintaining a Skupper network using Ansible</title>
+            <link>https://fgiorgetti.github.io/posts/20250310-skupper-ansible-v2/</link>
+            <pubDate>Mon, 10 Mar 2025 17:11:45 -0300</pubDate>
+            
+            <guid>https://fgiorgetti.github.io/posts/20250310-skupper-ansible-v2/</guid>
+            <description>Introduction Skupper version 2.0.0 has landed and it&amp;rsquo;s bringing a shiny new Ansible collection with it, now available on Ansible Galaxy as skupper.v2.
+This isn&amp;rsquo;t just another update, it&amp;rsquo;s a toolkit that empowers you to define and manage Skupper networks with ease, no matter where they run — Kubernetes, Podman, Docker, or bare-metal Linux.
+Declarative power at your fingertips Skupper 2.0.0 redefines how Virtual Application Networks (VANs) come to life. At its core is a sleek, declarative approach powered by a fresh set of Kubernetes Custom Resource Definitions (CRDs).</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p><a href="https://skupper.io/v2/">Skupper version 2.0.0</a> has landed and it&rsquo;s bringing a shiny new Ansible collection with it,
+now available on Ansible Galaxy as <a href="https://galaxy.ansible.com/ui/repo/published/skupper/v2/">skupper.v2</a>.</p>
+<p><img src="/posts/20250310-skupper-ansible-v2/images/skupperv2-intro.png"></p>
+<p>This isn&rsquo;t just another update, it&rsquo;s a toolkit that empowers you to define and manage Skupper networks with ease,
+no matter where they run — Kubernetes, Podman, Docker, or bare-metal Linux.</p>
+<h2 id="declarative-power-at-your-fingertips">Declarative power at your fingertips</h2>
+<p><a href="https://skupper.io/v2/">Skupper 2.0.0</a> redefines how Virtual Application Networks (VANs) come to life.
+At its core is a sleek, declarative approach powered by a fresh set of Kubernetes Custom Resource Definitions (CRDs). Think of it as a blueprint for your network: you describe what you want, and Skupper makes it happen.</p>
+<p>These CRDs aren&rsquo;t just for Kubernetes users. They work just as seamlessly outside the Kubernetes ecosystem, delivering a unified, platform-agnostic way to declare and deploy your Skupper network.</p>
+<h3 id="linking-sites">Linking Sites</h3>
+<p>To build a <code>VAN</code> across multiple Skupper sites, you have to generate an <code>AccessToken</code> from one site —ideally a public or accessible hub—and share it with another. That token is the golden key that locks the sites into the same network, forging a secure, reliable mTLS Skupper Link to the hub.</p>
+<p>Although this process is quite simple and easy to perform manually, when your environment scales, you will need some sort of automation to help you keeping your <code>VAN</code> linked and updated.</p>
+<h2 id="new-ansible-collection">New Ansible collection</h2>
+<p>The <a href="https://skupper.io/v2/"><strong>skupper.v2</strong> Ansible collection</a> introduces the final components needed to define your entire Virtual Application Network (VAN) in a scalable and streamlined way, saving significant time and ensuring reliable, consistent VAN configurations across all your sites.</p>
+<h2 id="hands-on">Hands-on</h2>
+<p>In order to demonstrate its power, we are going to create a Virtual Application Network that connects a simple Frontend
+application which runs on a local Minikube cluster with a Backend microservice running on another namespace within the
+same Minikube cluster.</p>
+<blockquote>
+<p><strong>NOTE</strong></p>
+<p>This is just a minimal scenario, for an easy and local evaluation, that is why we are running the two applications within the same cluster. It is based on the <a href="https://github.com/skupperproject/skupper-example-yaml/tree/v2/">Hello World Example</a>.</p>
+</blockquote>
+<p><img src="/posts/20250310-skupper-ansible-v2/images/hello-world-v2.png"></p>
+<h3 id="pre-requisites">Pre-requisites</h3>
+<ul>
+<li><a href="https://skupper.io/start/minikube.html">A minikube cluster</a></li>
+<li>Minikube tunnel running</li>
+<li>Ansible (&gt;= 2.15.0)</li>
+<li>Install the <a href="https://galaxy.ansible.com/ui/repo/published/skupper/v2/">skupper.v2</a> Ansible collection and its dependent python modules
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ansible-galaxy collection install skupper.v2
+</span></span><span style="display:flex;"><span>python -m pip install kubernetes PyYAML
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="how-it-works">How it works</h3>
+<p>The goal here is to demonstrate how to setup a Skupper network using Ansible, to connect
+kubernetes applications that are initially unable to reach each other.</p>
+<p>Here&rsquo;s the <code>playbook.yaml</code> content that we will use for that:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Skupper V2 Hello World Example using Ansible</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">hosts</span>: <span style="color:#ae81ff">all</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">connection</span>: <span style="color:#ae81ff">local</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">tasks</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Create Kubernetes namespaces west and east</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">kubernetes.core.k8s</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;{{ item }}&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">api_version</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Namespace</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">state</span>: <span style="color:#ae81ff">present</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">loop</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">west</span>
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">east</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Install cluster scoped Skupper 2.0.0 into Kubernetes</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">kubernetes.core.k8s</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">state</span>: <span style="color:#ae81ff">present</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">definition</span>: <span style="color:#e6db74">&#34;{{ lookup(&#39;url&#39;, &#39;https://github.com/skupperproject/skupper/releases/download/2.0.0/skupper-cluster-scope.yaml&#39;, split_lines=False) }}&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Create resources on west namespace</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">skupper.v2.resource</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">path</span>: <span style="color:#e6db74">&#34;{{ item }}&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">west</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">loop</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/v2/west/site.yaml</span>
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/v2/west/listener.yaml</span>
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/v2/west/frontend.yaml</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Create resources on east namespace</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">skupper.v2.resource</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">path</span>: <span style="color:#e6db74">&#34;{{ item }}&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">east</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">loop</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/v2/east/site.yaml</span>
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/v2/east/connector.yaml</span>
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/v2/east/backend.yaml</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Generate an AccessToken to the west namespace</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">skupper.v2.token</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">west-grant</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">west</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">register</span>: <span style="color:#ae81ff">result</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Create AccessToken on east namespace</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">skupper.v2.resource</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">def</span>: <span style="color:#e6db74">&#34;{{ result.token }}&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">east</span>
+</span></span></code></pre></div><blockquote>
+<p><strong>NOTE</strong></p>
+<p>This playbook relies on the <code>KUBECONFIG</code> environment variable to be properly set.</p>
+</blockquote>
+<p>Here is a breakdown of the tasks performed by the <code>playbook.yaml</code>:</p>
+<ol>
+<li>Create <code>west</code> and <code>east</code> namespaces</li>
+<li>Install skupper 2.0.0 into the <code>skupper</code> namespace</li>
+<li>Create the <code>west</code> namespace resources</li>
+<li>Create the <code>east</code> namespace resources</li>
+<li>Generate an <code>AccessToken</code> to the <code>west</code> namespace</li>
+<li>Create <code>AccessToken</code> on <code>east</code> namespace</li>
+</ol>
+<blockquote>
+<p><strong>IMPORTANT</strong>
+The steps <strong>5</strong> and <strong>6</strong> solve the <a href="/posts/20250310-skupper-ansible-v2/#linking-sites">scalability issue for linking sites</a> in your Skupper Network.</p>
+</blockquote>
+<h2 id="running-the-example">Running the example</h2>
+<ol>
+<li>Open a terminal, set the KUBECONFIG environment variable to make sure you&rsquo;re using the
+appropriate Kubernetes cluster.</li>
+</ol>
+<blockquote>
+<p><strong>WARNING</strong></p>
+<p>This example creates and modifies three namespaces on your Kubernetes cluster:</p>
+<ul>
+<li><code>skupper</code>,</li>
+<li><code>west</code> and</li>
+<li><code>east</code></li>
+</ul>
+<p>In case any of these namespaces exist in your cluster, <strong>do not proceed</strong>, unless you know what you&rsquo;re doing.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get namespace | grep -E <span style="color:#e6db74">&#39;(skupper|west|east)&#39;</span>
+</span></span></code></pre></div></blockquote>
+<ol start="2">
+<li>
+<p>Next download the <a href="/posts/20250310-skupper-ansible-v2/resources/playbook.yaml"><code>playbook.yaml</code></a> to an appropriate location in your file system.</p>
+</li>
+<li>
+<p>Run the Ansible playbook</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ansible-playbook -i localhost, playbook.yaml
+</span></span></code></pre></div></li>
+<li>
+<p>Verify that the Front-end application is working</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl -n west port-forward deployment/frontend <span style="color:#ae81ff">8080</span>
+</span></span></code></pre></div></li>
+<li>
+<p>Open your browser and go to <code>http://localhost:8080</code></p>
+</li>
+<li>
+<p>Test the application</p>
+</li>
+</ol>
+<p>If you want to clean things up, you can delete the: <code>west</code>, <code>east</code> and <code>skupper</code> namespaces.</p>
+<pre tabindex="0"><code>kubectl delete namespace west east skupper
+</code></pre><h2 id="summary">Summary</h2>
+<p><a href="https://skupper.io/v2/">Skupper</a> simplifies the connection of your applications using secure mTLS links between Skupper sites, eliminating the need for elevated privileges or network modifications.</p>
+<p>This new version standardizes the Virtual Application Network (VAN) definition, enabling you to declare your VAN in advance, precisely specifying what is exposed internally within the VAN and where each workload will be consumed.</p>
+<p>The <a href="https://galaxy.ansible.com/ui/repo/published/skupper/v2/"><strong>skupper.v2</strong> Ansible collection</a> streamlines the definition of Skupper resources, regardless of the target platform for your Skupper site, offering a highly convenient mechanism to link sites—regardless of VAN size—while reducing significant effort and maintaining consistency across your VAN.</p>
+]]></content>
+        </item>
         
         <item>
             <title>Skupper service ingress through containers</title>
@@ -23,7 +178,7 @@ Service Proxies The service proxies are the main objects to be explored here.</d
 <p>In order to evaluate some strategies for dealing with ingresses using a stable
 name resolution within a container network (Podman or Docker), I have used the
 following scenario as the foundation for this study:</p>
-<p><img src="images/scenario.png" alt=""></p>
+<p><img src="/posts/20240322-skupper-podman-ingresses/images/scenario.png"></p>
 <p>In the following sections, I will describe each component in more detail.</p>
 <p>Artifacts for each strategy are also available and they can be easily executed
 using <em>podman-compose</em> or <em>docker compose</em>.</p>
@@ -120,10 +275,10 @@ alternative to be evaluated as well.</p>
 <h2 id="artifacts-for-evaluation">Artifacts for evaluation</h2>
 <p>You can download and evaluate each of the approaches through the following links.
 These samples can be run using <code>docker compose</code> or <code>podman-compose</code>.</p>
-<p><a href="resources/netfilter.tar.gz">1. Netfilter</a></p>
-<p><a href="resources/edgerouter.tar.gz">2. Edge-Router</a></p>
-<p><a href="resources/haproxy.tar.gz">3. HAProxy</a></p>
-<p><a href="resources/envoy.tar.gz">4. Envoy</a></p>
+<p><a href="/posts/20240322-skupper-podman-ingresses/resources/netfilter.tar.gz">1. Netfilter</a></p>
+<p><a href="/posts/20240322-skupper-podman-ingresses/resources/edgerouter.tar.gz">2. Edge-Router</a></p>
+<p><a href="/posts/20240322-skupper-podman-ingresses/resources/haproxy.tar.gz">3. HAProxy</a></p>
+<p><a href="/posts/20240322-skupper-podman-ingresses/resources/envoy.tar.gz">4. Envoy</a></p>
 <h2 id="validating-each-scenario">Validating each scenario</h2>
 <table>
 <thead>
@@ -209,7 +364,7 @@ Here I am using a two routers network, named west and east.</p>
 <p>The west router has an inter-router link (secured with TLS) defined to connect with the
 east one (using skupper-router-east hostname).</p>
 <p>All the configuration, sample certificates and compose files can be downloaded by clicking
-the following link: <a href="example.tar.gz">Example files (tarball)</a>.</p>
+the following link: <a href="/posts/20240320-router-with-compose/example.tar.gz">Example files (tarball)</a>.</p>
 <p>Once you extract the tarball, you will find a new directory named example which contains
 the <code>compose.yaml</code> file, as well as all the directories storing the configuration needed by
 the two routers, under: <code>./example/west</code> and <code>./example/east</code>.</p>
@@ -286,9 +441,9 @@ which is a valid host within the generated podman network.</p>
 will also remove the podman network that has been created earlier.</p>
 <h2 id="resources">Resources:</h2>
 <ul>
-<li><a href="skupper-router-east-west.yaml">skupper-router-east-west.yaml</a></li>
-<li><a href="play.sh">play.sh</a></li>
-<li><a href="down.sh">down.sh</a></li>
+<li><a href="/posts/20240319-podman-kube-play/skupper-router-east-west.yaml">skupper-router-east-west.yaml</a></li>
+<li><a href="/posts/20240319-podman-kube-play/play.sh">play.sh</a></li>
+<li><a href="/posts/20240319-podman-kube-play/down.sh">down.sh</a></li>
 </ul>
 ]]></content>
         </item>
@@ -306,9 +461,12 @@ Skupper network using Ansible.</p>
 <p>The example demonstrated in the video, can be found at:
 <a href="https://github.com/skupperproject/skupper-ansible/tree/main/examples/hello-world">https://github.com/skupperproject/skupper-ansible/tree/main/examples/hello-world</a></p>
 
-<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="https://www.youtube.com/embed/7H0lhjloiTA" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
-</div>
+
+    
+    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+      <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" loading="eager" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/7H0lhjloiTA?autoplay=0&controls=1&end=0&loop=0&mute=0&start=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="YouTube video"
+      ></iframe>
+    </div>
 
 ]]></content>
         </item>
@@ -714,7 +872,7 @@ directly to the argocd-server service.</p>
 <pre tabindex="0"><code>kubectl port-forward svc/argocd-server -n argocd 8080:443
 </code></pre><p>Now you can access your API by using: <code>localhost:8080</code>.</p>
 <p>You will see a page like:
-<img src="/images/20210129-argocd-login.png" alt=""></p>
+<img src="/images/20210129-argocd-login.png"></p>
 <ol start="5">
 <li>
 <p>Logging in using your CLI</p>
@@ -747,7 +905,7 @@ two Kubernetes clusters (or in this demonstration, against two Kubernetes namesp
 of the <a href="https://skupper.io/examples/">Skupper&rsquo;s Examples WebSite</a>.</p>
 <p>It is composed by a Backend and a Frontend service. We are going to deploy each component to a different
 namespace in our Kubernetes cluster.</p>
-<p><img src="https://github.com/skupperproject/skupper-example-hello-world/raw/master/images/entities.svg" alt=""></p>
+<p><img src="https://github.com/skupperproject/skupper-example-hello-world/raw/master/images/entities.svg"></p>
 <p>Once we have these two components running, they will not be able to communicate. The goal, at this point,
 is just to make sure both components are running isolatedly on their own namespaces.</p>
 <h2 id="argo-cd-applications">Argo CD applications</h2>
@@ -771,7 +929,7 @@ API that is supposed to run at the east namespace.</p>
 <ol>
 <li>
 <p>At the Argo CD console, click &ldquo;+ NEW APP&rdquo;</p>
-<p><img src="/images/20210129-new-app.png" alt=""></p>
+<p><img src="/images/20210129-new-app.png"></p>
 </li>
 <li>
 <p>Enter the new application information:</p>

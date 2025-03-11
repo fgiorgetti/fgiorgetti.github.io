@@ -1,18 +1,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Fernando Giorgetti - about me</title>
+        <title>Fernando Giorgetti - blog</title>
         <link>https://fgiorgetti.github.io/</link>
-        <description>Recent content on Fernando Giorgetti - about me</description>
+        <description>Recent content on Fernando Giorgetti - blog</description>
         <generator>Hugo -- gohugo.io</generator>
-        <language>en-us</language>
+        <language>en</language>
         <copyright>Fernando Giorgetti</copyright>
-        <lastBuildDate>Fri, 22 Mar 2024 16:19:33 -0300</lastBuildDate>
+        <lastBuildDate>Mon, 10 Mar 2025 17:11:45 -0300</lastBuildDate>
         <atom:link href="https://fgiorgetti.github.io/index.xml" rel="self" type="application/rss+xml" />
         
         <item>
             <title>Posts</title>
             <link>https://fgiorgetti.github.io/posts/</link>
-            <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
+            <pubDate>Mon, 10 Mar 2025 17:11:45 -0300</pubDate>
             
             <guid>https://fgiorgetti.github.io/posts/</guid>
             <description></description>

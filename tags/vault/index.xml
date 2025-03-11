@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Vault on Fernando Giorgetti - blog</title>
+    <link>http://localhost:1313/tags/vault/</link>
+    <description>Recent content in Vault on Fernando Giorgetti - blog</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <copyright>Fernando Giorgetti</copyright>
+    <lastBuildDate>Tue, 11 Mar 2025 10:00:00 -0300</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/vault/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Leveraging Skupper network linking with Ansible and Hashicorp Vault</title>
+      <link>http://localhost:1313/posts/20250310-skupper-with-vault/</link>
+      <pubDate>Tue, 11 Mar 2025 10:00:00 -0300</pubDate>
+      <guid>http://localhost:1313/posts/20250310-skupper-with-vault/</guid>
+      <description>Scenario Pre-requisites </description>
+    </item>
+  </channel>
+</rss>

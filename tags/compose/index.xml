@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>compose on Fernando Giorgetti - about me</title>
+    <title>Compose on Fernando Giorgetti - blog</title>
     <link>https://fgiorgetti.github.io/tags/compose/</link>
-    <description>Recent content in compose on Fernando Giorgetti - about me</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+    <description>Recent content in Compose on Fernando Giorgetti - blog</description>
+    <generator>Hugo</generator>
+    <language>en</language>
     <copyright>Fernando Giorgetti</copyright>
-    <lastBuildDate>Fri, 22 Mar 2024 16:19:33 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/compose/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 22 Mar 2024 16:19:33 -0300</lastBuildDate>
+    <atom:link href="https://fgiorgetti.github.io/tags/compose/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Skupper service ingress through containers</title>
       <link>https://fgiorgetti.github.io/posts/20240322-skupper-podman-ingresses/</link>
       <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
-      
       <guid>https://fgiorgetti.github.io/posts/20240322-skupper-podman-ingresses/</guid>
-      <description>Introduction In order to evaluate some strategies for dealing with ingresses using a stable name resolution within a container network (Podman or Docker), I have used the following scenario as the foundation for this study:
-In the following sections, I will describe each component in more detail.
-Artifacts for each strategy are also available and they can be easily executed using podman-compose or docker compose.
-Service Proxies The service proxies are the main objects to be explored here.</description>
+      <description>Introduction In order to evaluate some strategies for dealing with ingresses using a stable name resolution within a container network (Podman or Docker), I have used the following scenario as the foundation for this study:&#xA;In the following sections, I will describe each component in more detail.&#xA;Artifacts for each strategy are also available and they can be easily executed using podman-compose or docker compose.&#xA;Service Proxies The service proxies are the main objects to be explored here.</description>
     </item>
-    
   </channel>
 </rss>

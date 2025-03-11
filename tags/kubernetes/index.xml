@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>kubernetes on Fernando Giorgetti - about me</title>
+    <title>Kubernetes on Fernando Giorgetti - blog</title>
     <link>https://fgiorgetti.github.io/tags/kubernetes/</link>
-    <description>Recent content in kubernetes on Fernando Giorgetti - about me</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+    <description>Recent content in Kubernetes on Fernando Giorgetti - blog</description>
+    <generator>Hugo</generator>
+    <language>en</language>
     <copyright>Fernando Giorgetti</copyright>
-    <lastBuildDate>Tue, 19 Mar 2024 10:19:00 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 10 Mar 2025 17:11:45 -0300</lastBuildDate>
+    <atom:link href="https://fgiorgetti.github.io/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Maintaining a Skupper network using Ansible</title>
+      <link>https://fgiorgetti.github.io/posts/20250310-skupper-ansible-v2/</link>
+      <pubDate>Mon, 10 Mar 2025 17:11:45 -0300</pubDate>
+      <guid>https://fgiorgetti.github.io/posts/20250310-skupper-ansible-v2/</guid>
+      <description>Introduction Skupper version 2.0.0 has landed and it&amp;rsquo;s bringing a shiny new Ansible collection with it, now available on Ansible Galaxy as skupper.v2.&#xA;This isn&amp;rsquo;t just another update, it&amp;rsquo;s a toolkit that empowers you to define and manage Skupper networks with ease, no matter where they run — Kubernetes, Podman, Docker, or bare-metal Linux.&#xA;Declarative power at your fingertips Skupper 2.0.0 redefines how Virtual Application Networks (VANs) come to life. At its core is a sleek, declarative approach powered by a fresh set of Kubernetes Custom Resource Definitions (CRDs).</description>
+    </item>
     <item>
       <title>Playing with kube files using Podman</title>
       <link>https://fgiorgetti.github.io/posts/20240319-podman-kube-play/</link>
       <pubDate>Tue, 19 Mar 2024 10:19:00 -0300</pubDate>
-      
       <guid>https://fgiorgetti.github.io/posts/20240319-podman-kube-play/</guid>
-      <description>The goal of this exercise is to create two skupper-router containers named skupper-router-east and skupper-router-west with Podman, exposing a TLS AMQP listener on the east router, with all generated credentials and router configuration included as Kubernetes descriptors (using YAML), so that these YAML files can be loaded with podman kube play to spin up the two router pods.
-All files mentioned here, can be found below.
-Deploying this sample To deploy this sample, run: .</description>
+      <description>The goal of this exercise is to create two skupper-router containers named skupper-router-east and skupper-router-west with Podman, exposing a TLS AMQP listener on the east router, with all generated credentials and router configuration included as Kubernetes descriptors (using YAML), so that these YAML files can be loaded with podman kube play to spin up the two router pods.&#xA;All files mentioned here, can be found below.&#xA;Deploying this sample To deploy this sample, run: .</description>
     </item>
-    
   </channel>
 </rss>

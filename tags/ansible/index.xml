@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ansible on Fernando Giorgetti - about me</title>
+    <title>Ansible on Fernando Giorgetti - blog</title>
     <link>https://fgiorgetti.github.io/tags/ansible/</link>
-    <description>Recent content in ansible on Fernando Giorgetti - about me</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+    <description>Recent content in Ansible on Fernando Giorgetti - blog</description>
+    <generator>Hugo</generator>
+    <language>en</language>
     <copyright>Fernando Giorgetti</copyright>
-    <lastBuildDate>Thu, 17 Nov 2022 16:13:04 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/ansible/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 10 Mar 2025 17:11:45 -0300</lastBuildDate>
+    <atom:link href="https://fgiorgetti.github.io/tags/ansible/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Maintaining a Skupper network using Ansible</title>
+      <link>https://fgiorgetti.github.io/posts/20250310-skupper-ansible-v2/</link>
+      <pubDate>Mon, 10 Mar 2025 17:11:45 -0300</pubDate>
+      <guid>https://fgiorgetti.github.io/posts/20250310-skupper-ansible-v2/</guid>
+      <description>Introduction Skupper version 2.0.0 has landed and it&amp;rsquo;s bringing a shiny new Ansible collection with it, now available on Ansible Galaxy as skupper.v2.&#xA;This isn&amp;rsquo;t just another update, it&amp;rsquo;s a toolkit that empowers you to define and manage Skupper networks with ease, no matter where they run — Kubernetes, Podman, Docker, or bare-metal Linux.&#xA;Declarative power at your fingertips Skupper 2.0.0 redefines how Virtual Application Networks (VANs) come to life. At its core is a sleek, declarative approach powered by a fresh set of Kubernetes Custom Resource Definitions (CRDs).</description>
+    </item>
     <item>
       <title>Skupper Network Deployment using Ansible</title>
       <link>https://fgiorgetti.github.io/posts/20221117-skupper-network-deployment/</link>
       <pubDate>Thu, 17 Nov 2022 16:13:04 -0300</pubDate>
-      
       <guid>https://fgiorgetti.github.io/posts/20221117-skupper-network-deployment/</guid>
-      <description>I have prepared the following video demonstrating a new approach to set up your Skupper network using Ansible.
-The example demonstrated in the video, can be found at: https://github.com/skupperproject/skupper-ansible/tree/main/examples/hello-world</description>
+      <description>I have prepared the following video demonstrating a new approach to set up your Skupper network using Ansible.&#xA;The example demonstrated in the video, can be found at: https://github.com/skupperproject/skupper-ansible/tree/main/examples/hello-world</description>
     </item>
-    
   </channel>
 </rss>

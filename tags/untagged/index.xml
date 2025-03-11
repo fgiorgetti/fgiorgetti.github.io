@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Untagged on Fernando Giorgetti - blog</title>
+    <link>http://localhost:1313/tags/untagged/</link>
+    <description>Recent content in Untagged on Fernando Giorgetti - blog</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <copyright>Fernando Giorgetti</copyright>
+    <lastBuildDate>Mon, 10 Mar 2025 17:11:45 -0300</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/untagged/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>20250310 Skupper With Vault</title>
+      <link>http://localhost:1313/posts/20250310-skupper-with-vault/</link>
+      <pubDate>Mon, 10 Mar 2025 17:11:45 -0300</pubDate>
+      <guid>http://localhost:1313/posts/20250310-skupper-with-vault/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

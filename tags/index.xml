@@ -1,210 +1,167 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on Fernando Giorgetti - about me</title>
+    <title>Tags on Fernando Giorgetti - blog</title>
     <link>https://fgiorgetti.github.io/tags/</link>
-    <description>Recent content in Tags on Fernando Giorgetti - about me</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+    <description>Recent content in Tags on Fernando Giorgetti - blog</description>
+    <generator>Hugo</generator>
+    <language>en</language>
     <copyright>Fernando Giorgetti</copyright>
-    <lastBuildDate>Fri, 22 Mar 2024 16:19:33 -0300</lastBuildDate><atom:link href="https://fgiorgetti.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 10 Mar 2025 17:11:45 -0300</lastBuildDate>
+    <atom:link href="https://fgiorgetti.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>compose</title>
-      <link>https://fgiorgetti.github.io/tags/compose/</link>
-      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/compose/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>docker</title>
-      <link>https://fgiorgetti.github.io/tags/docker/</link>
-      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/docker/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>edge</title>
-      <link>https://fgiorgetti.github.io/tags/edge/</link>
-      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/edge/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>edge-router</title>
-      <link>https://fgiorgetti.github.io/tags/edge-router/</link>
-      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/edge-router/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>envoyproxy</title>
-      <link>https://fgiorgetti.github.io/tags/envoyproxy/</link>
-      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/envoyproxy/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>haproxy</title>
-      <link>https://fgiorgetti.github.io/tags/haproxy/</link>
-      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/haproxy/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>iperf3</title>
-      <link>https://fgiorgetti.github.io/tags/iperf3/</link>
-      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/iperf3/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>iptables</title>
-      <link>https://fgiorgetti.github.io/tags/iptables/</link>
-      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/iptables/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>netfilter</title>
-      <link>https://fgiorgetti.github.io/tags/netfilter/</link>
-      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/netfilter/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>podman</title>
-      <link>https://fgiorgetti.github.io/tags/podman/</link>
-      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/podman/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>skupper</title>
-      <link>https://fgiorgetti.github.io/tags/skupper/</link>
-      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/skupper/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>skupper-router</title>
-      <link>https://fgiorgetti.github.io/tags/skupper-router/</link>
-      <pubDate>Fri, 22 Mar 2024 16:19:33 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/skupper-router/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>docker-compose</title>
-      <link>https://fgiorgetti.github.io/tags/docker-compose/</link>
-      <pubDate>Wed, 20 Mar 2024 09:14:27 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/docker-compose/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>podman-compose</title>
-      <link>https://fgiorgetti.github.io/tags/podman-compose/</link>
-      <pubDate>Wed, 20 Mar 2024 09:14:27 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/podman-compose/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>kubernetes</title>
-      <link>https://fgiorgetti.github.io/tags/kubernetes/</link>
-      <pubDate>Tue, 19 Mar 2024 10:19:00 -0300</pubDate>
-      
-      <guid>https://fgiorgetti.github.io/tags/kubernetes/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>ansible</title>
+      <title>Ansible</title>
       <link>https://fgiorgetti.github.io/tags/ansible/</link>
-      <pubDate>Thu, 17 Nov 2022 16:13:04 -0300</pubDate>
-      
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://fgiorgetti.github.io/tags/ansible/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>fsnotify</title>
+      <title>Kubernetes</title>
+      <link>https://fgiorgetti.github.io/tags/kubernetes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://fgiorgetti.github.io/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Podman</title>
+      <link>https://fgiorgetti.github.io/tags/podman/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://fgiorgetti.github.io/tags/podman/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Skupper</title>
+      <link>https://fgiorgetti.github.io/tags/skupper/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://fgiorgetti.github.io/tags/skupper/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Compose</title>
+      <link>https://fgiorgetti.github.io/tags/compose/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://fgiorgetti.github.io/tags/compose/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Docker</title>
+      <link>https://fgiorgetti.github.io/tags/docker/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://fgiorgetti.github.io/tags/docker/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Edge</title>
+      <link>https://fgiorgetti.github.io/tags/edge/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://fgiorgetti.github.io/tags/edge/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Edge-Router</title>
+      <link>https://fgiorgetti.github.io/tags/edge-router/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://fgiorgetti.github.io/tags/edge-router/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Envoyproxy</title>
+      <link>https://fgiorgetti.github.io/tags/envoyproxy/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://fgiorgetti.github.io/tags/envoyproxy/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Haproxy</title>
+      <link>https://fgiorgetti.github.io/tags/haproxy/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://fgiorgetti.github.io/tags/haproxy/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Iperf3</title>
+      <link>https://fgiorgetti.github.io/tags/iperf3/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://fgiorgetti.github.io/tags/iperf3/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Iptables</title>
+      <link>https://fgiorgetti.github.io/tags/iptables/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://fgiorgetti.github.io/tags/iptables/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Netfilter</title>
+      <link>https://fgiorgetti.github.io/tags/netfilter/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://fgiorgetti.github.io/tags/netfilter/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Skupper-Router</title>
+      <link>https://fgiorgetti.github.io/tags/skupper-router/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://fgiorgetti.github.io/tags/skupper-router/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Docker-Compose</title>
+      <link>https://fgiorgetti.github.io/tags/docker-compose/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://fgiorgetti.github.io/tags/docker-compose/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Podman-Compose</title>
+      <link>https://fgiorgetti.github.io/tags/podman-compose/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://fgiorgetti.github.io/tags/podman-compose/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Fsnotify</title>
       <link>https://fgiorgetti.github.io/tags/fsnotify/</link>
-      <pubDate>Tue, 23 Aug 2022 00:21:47 -0300</pubDate>
-      
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://fgiorgetti.github.io/tags/fsnotify/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>golang</title>
+      <title>Golang</title>
       <link>https://fgiorgetti.github.io/tags/golang/</link>
-      <pubDate>Tue, 23 Aug 2022 00:21:47 -0300</pubDate>
-      
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://fgiorgetti.github.io/tags/golang/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>bash</title>
+      <title>Bash</title>
       <link>https://fgiorgetti.github.io/tags/bash/</link>
-      <pubDate>Wed, 03 Feb 2021 17:15:08 -0300</pubDate>
-      
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://fgiorgetti.github.io/tags/bash/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>cobra</title>
+      <title>Cobra</title>
       <link>https://fgiorgetti.github.io/tags/cobra/</link>
-      <pubDate>Wed, 03 Feb 2021 17:15:08 -0300</pubDate>
-      
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://fgiorgetti.github.io/tags/cobra/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>argocd</title>
+      <title>Argocd</title>
       <link>https://fgiorgetti.github.io/tags/argocd/</link>
-      <pubDate>Fri, 29 Jan 2021 18:27:23 -0300</pubDate>
-      
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://fgiorgetti.github.io/tags/argocd/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>gitops</title>
+      <title>Gitops</title>
       <link>https://fgiorgetti.github.io/tags/gitops/</link>
-      <pubDate>Fri, 29 Jan 2021 18:27:23 -0300</pubDate>
-      
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://fgiorgetti.github.io/tags/gitops/</guid>
       <description></description>
     </item>
-    
   </channel>
 </rss>

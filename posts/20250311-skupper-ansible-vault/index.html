@@ -47,7 +47,7 @@ This can create a significant hurdle for automation, as Access Tokens or Links g
 To address this, the best approach is to assign separate personas to handle the setup of each site within the Skupper network.">
   <meta itemprop="datePublished" content="2025-03-17T22:20:50-03:00">
   <meta itemprop="dateModified" content="2025-03-17T22:20:50-03:00">
-  <meta itemprop="wordCount" content="1356">
+  <meta itemprop="wordCount" content="1360">
   <meta itemprop="keywords" content="Skupper,Kubernetes,Ansible,Podman,Vault">
 
   <meta name="twitter:card" content="summary">
@@ -315,12 +315,12 @@ Here we can create three separate Vault Tokens, so each persona has access to th
 </span></span></code></pre></div><h3 id="ansible-playbooks">Ansible Playbooks</h3>
 <p>Download the Ansible playbook files below:</p>
 <ul>
-<li><a href="/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-public.yaml">playbook-public.yaml</a></li>
-<li><a href="/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-private.yaml">playbook-private.yaml</a></li>
-<li><a href="/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-podman.yaml">playbook-podman.yaml</a></li>
+<li><a href="https://raw.githubusercontent.com/fgiorgetti/fgiorgetti.github.io/refs/heads/main/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-public.yaml">playbook-public.yaml</a></li>
+<li><a href="https://raw.githubusercontent.com/fgiorgetti/fgiorgetti.github.io/refs/heads/main/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-private.yaml">playbook-private.yaml</a></li>
+<li><a href="https://raw.githubusercontent.com/fgiorgetti/fgiorgetti.github.io/refs/heads/main/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-podman.yaml">playbook-podman.yaml</a></li>
 </ul>
 <h4 id="public-site">Public site</h4>
-<p>Playbook: <a href="/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-public.yaml">playbook-public.yaml</a>.</p>
+<p>Playbook: <a href="https://raw.githubusercontent.com/fgiorgetti/fgiorgetti.github.io/refs/heads/main/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-public.yaml">playbook-public.yaml</a>.</p>
 <ol>
 <li>This initial task ensures that the Skupper V2 Controller is running in the <code>skupper</code> namespace.
 It uses the latest development version of Skupper (v2-dev-release).</li>
@@ -461,6 +461,7 @@ and we do that using the Vault Token (credentials) provided through Ansible vari
 
 
 <h4 id="private-site">Private site</h4>
+<p>Playbook: <a href="https://raw.githubusercontent.com/fgiorgetti/fgiorgetti.github.io/refs/heads/main/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-private.yaml">playbook-private.yaml</a>.</p>
 <ol>
 <li>The initial task, is the same as shown in the <code>playbook-public.yaml</code>. It ensures that the Skupper V2 Controller
 is running in the <code>skupper</code> namespace.</li>
@@ -592,6 +593,7 @@ namespace, as well as all the Skupper resources needed (Site and Connector).</li
 
 
 <h4 id="podman-site">Podman site</h4>
+<p>Playbook: <a href="https://raw.githubusercontent.com/fgiorgetti/fgiorgetti.github.io/refs/heads/main/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-podman.yaml">playbook-podman.yaml</a>.</p>
 <ol>
 <li>The first task runs the Database as a podman container</li>
 </ol>
@@ -825,7 +827,7 @@ boosting flexibility and enabling automation that’s finely tuned to individual
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        1356 Words
+        1360 Words
       </p>
 
       <p>

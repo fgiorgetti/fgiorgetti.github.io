@@ -129,12 +129,12 @@ Here we can create three separate Vault Tokens, so each persona has access to th
 </span></span></code></pre></div><h3 id="ansible-playbooks">Ansible Playbooks</h3>
 <p>Download the Ansible playbook files below:</p>
 <ul>
-<li><a href="/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-public.yaml">playbook-public.yaml</a></li>
-<li><a href="/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-private.yaml">playbook-private.yaml</a></li>
-<li><a href="/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-podman.yaml">playbook-podman.yaml</a></li>
+<li><a href="https://raw.githubusercontent.com/fgiorgetti/fgiorgetti.github.io/refs/heads/main/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-public.yaml">playbook-public.yaml</a></li>
+<li><a href="https://raw.githubusercontent.com/fgiorgetti/fgiorgetti.github.io/refs/heads/main/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-private.yaml">playbook-private.yaml</a></li>
+<li><a href="https://raw.githubusercontent.com/fgiorgetti/fgiorgetti.github.io/refs/heads/main/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-podman.yaml">playbook-podman.yaml</a></li>
 </ul>
 <h4 id="public-site">Public site</h4>
-<p>Playbook: <a href="/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-public.yaml">playbook-public.yaml</a>.</p>
+<p>Playbook: <a href="https://raw.githubusercontent.com/fgiorgetti/fgiorgetti.github.io/refs/heads/main/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-public.yaml">playbook-public.yaml</a>.</p>
 <ol>
 <li>This initial task ensures that the Skupper V2 Controller is running in the <code>skupper</code> namespace.
 It uses the latest development version of Skupper (v2-dev-release).</li>
@@ -275,6 +275,7 @@ and we do that using the Vault Token (credentials) provided through Ansible vari
 
 
 <h4 id="private-site">Private site</h4>
+<p>Playbook: <a href="https://raw.githubusercontent.com/fgiorgetti/fgiorgetti.github.io/refs/heads/main/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-private.yaml">playbook-private.yaml</a>.</p>
 <ol>
 <li>The initial task, is the same as shown in the <code>playbook-public.yaml</code>. It ensures that the Skupper V2 Controller
 is running in the <code>skupper</code> namespace.</li>
@@ -406,6 +407,7 @@ namespace, as well as all the Skupper resources needed (Site and Connector).</li
 
 
 <h4 id="podman-site">Podman site</h4>
+<p>Playbook: <a href="https://raw.githubusercontent.com/fgiorgetti/fgiorgetti.github.io/refs/heads/main/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-podman.yaml">playbook-podman.yaml</a>.</p>
 <ol>
 <li>The first task runs the Database as a podman container</li>
 </ol>
@@ -950,60 +952,6 @@ seems like the best fit as it requires few resources and seems to have best thro
 host&rsquo;s IP and Port, is a mandatory thing, then Edge-router is the only choice that can be used.</p>
 <p>As an upcoming activity, it would be really interesting to do a performance analysis, comparing all the
 approaches mentioned here using both TCP (iperf3) and HTTP traffic.</p>
-]]></content>
-        </item>
-        
-        <item>
-            <title>Running skupper-router containers with compose</title>
-            <link>https://fgiorgetti.github.io/posts/20240320-router-with-compose/</link>
-            <pubDate>Wed, 20 Mar 2024 09:14:27 -0300</pubDate>
-            
-            <guid>https://fgiorgetti.github.io/posts/20240320-router-with-compose/</guid>
-            <description>A compose file can also be an interesting way to run a static bundle for skupper-routers. Here I am using a two routers network, named west and east.
-The west router has an inter-router link (secured with TLS) defined to connect with the east one (using skupper-router-east hostname).
-All the configuration, sample certificates and compose files can be downloaded by clicking the following link: Example files (tarball).
-Once you extract the tarball, you will find a new directory named example which contains the compose.</description>
-            <content type="html"><![CDATA[<p>A compose file can also be an interesting way to run a static bundle for skupper-routers.
-Here I am using a two routers network, named west and east.</p>
-<p>The west router has an inter-router link (secured with TLS) defined to connect with the
-east one (using skupper-router-east hostname).</p>
-<p>All the configuration, sample certificates and compose files can be downloaded by clicking
-the following link: <a href="/posts/20240320-router-with-compose/example.tar.gz">Example files (tarball)</a>.</p>
-<p>Once you extract the tarball, you will find a new directory named example which contains
-the <code>compose.yaml</code> file, as well as all the directories storing the configuration needed by
-the two routers, under: <code>./example/west</code> and <code>./example/east</code>.</p>
-<p>This <code>compose.yaml</code> file, works with both docker and podman.</p>
-<p>To deploy this multi-container scenario, run:</p>
-<table>
-<thead>
-<tr>
-<th>Docker</th>
-<th>Podman</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>docker compose up -d</td>
-<td>podman-compose up -d</td>
-</tr>
-</tbody>
-</table>
-<p>To teardown this multi-container scenario, run:</p>
-<table>
-<thead>
-<tr>
-<th>Docker</th>
-<th>Podman</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>docker compose down</td>
-<td>podman-compose down</td>
-</tr>
-</tbody>
-</table>
-<p><em><strong>Note:</strong></em> To install <code>podman-compose</code>, follow the <a href="https://github.com/containers/podman-compose?tab=readme-ov-file#installation">official instructions</a>.</p>
 ]]></content>
         </item>
         

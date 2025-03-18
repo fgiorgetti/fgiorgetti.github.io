@@ -15,8 +15,7 @@
     - name: Create podman site resources
       skupper.v2.resource:
         state: present
-        path: http://localhost:1313/posts/20250311-skupper-ansible-vault/resources/skupper/podman.yaml
-        # path: https://giorgetti.com.br/posts/20250311-skupper-ansible-vault/resources/skupper/podman.yaml
+        path: https://giorgetti.com.br/posts/20250311-skupper-ansible-vault/resources/skupper/podman.yaml
         platform: podman
 
     - name: Consume public site link from Vault

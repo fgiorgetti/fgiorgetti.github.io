@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Introduction When setting up a Skupper network, a single persona doesn’t always have access to all the participant clusters, namespaces, or non-Kubernetes hosts involved.
+This can create a significant hurdle for automation, as Access Tokens or Links generated at one site can’t be automatically shared with a target site.
+To address this, the best approach is to assign separate personas to handle the setup of each site within the Skupper network." />
+<meta name="keywords" content="software, skupper, kubernetes, ansible, podman, vault" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://fgiorgetti.github.io/posts/20250311-skupper-ansible-vault/" />
+
+
+    <title>
+        
+            Decentralizing Skupper network setup with Vault and Ansible :: Fernando Giorgetti - blog  — Software engineering topics
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.4e5c639214707eff609bb55fe49e183dee42258a73bc90e4cc7b0a84f900798a.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="Decentralizing Skupper network setup with Vault and Ansible">
+  <meta itemprop="description" content="Introduction When setting up a Skupper network, a single persona doesn’t always have access to all the participant clusters, namespaces, or non-Kubernetes hosts involved.
+This can create a significant hurdle for automation, as Access Tokens or Links generated at one site can’t be automatically shared with a target site.
+To address this, the best approach is to assign separate personas to handle the setup of each site within the Skupper network.">
+  <meta itemprop="datePublished" content="2025-03-17T22:20:50-03:00">
+  <meta itemprop="dateModified" content="2025-03-17T22:20:50-03:00">
+  <meta itemprop="wordCount" content="1368">
+  <meta itemprop="keywords" content="Skupper,Kubernetes,Ansible,Podman,Vault">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Decentralizing Skupper network setup with Vault and Ansible">
+  <meta name="twitter:description" content="Introduction When setting up a Skupper network, a single persona doesn’t always have access to all the participant clusters, namespaces, or non-Kubernetes hosts involved.
+This can create a significant hurdle for automation, as Access Tokens or Links generated at one site can’t be automatically shared with a target site.
+To address this, the best approach is to assign separate personas to handle the setup of each site within the Skupper network.">
+
+
+
+    <meta property="og:url" content="https://fgiorgetti.github.io/posts/20250311-skupper-ansible-vault/">
+  <meta property="og:site_name" content="Fernando Giorgetti - blog">
+  <meta property="og:title" content="Decentralizing Skupper network setup with Vault and Ansible">
+  <meta property="og:description" content="Introduction When setting up a Skupper network, a single persona doesn’t always have access to all the participant clusters, namespaces, or non-Kubernetes hosts involved.
+This can create a significant hurdle for automation, as Access Tokens or Links generated at one site can’t be automatically shared with a target site.
+To address this, the best approach is to assign separate personas to handle the setup of each site within the Skupper network.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-03-17T22:20:50-03:00">
+    <meta property="article:modified_time" content="2025-03-17T22:20:50-03:00">
+    <meta property="article:tag" content="Skupper">
+    <meta property="article:tag" content="Kubernetes">
+    <meta property="article:tag" content="Ansible">
+    <meta property="article:tag" content="Podman">
+    <meta property="article:tag" content="Vault">
+
+
+
+
+
+
+    <meta property="article:published_time" content="2025-03-17 22:20:50 -0300 -03" />
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">giorgetti.com.br</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/">Home</a></li><li><a href="/posts">Writings</a></li><li><a href="/tags">Tags</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <div>
+                    &nbsp; <a href="https://github.com/fgiorgetti" target="_blank" rel="noopener" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a> &nbsp;&nbsp; <a href="https://www.linkedin.com/in/fernandogiorgetti" target="_blank" rel="noopener" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a> &nbsp;
+                </div>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        7 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://fgiorgetti.github.io/posts/20250311-skupper-ansible-vault/">Decentralizing Skupper network setup with Vault and Ansible</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table of Contents</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#pre-requisites">Pre-requisites</a></li>
+    <li><a href="#scenario">Scenario</a></li>
+    <li><a href="#hands-on">Hands-on</a>
+      <ul>
+        <li><a href="#run-hashicorp-vault">Run Hashicorp Vault</a></li>
+        <li><a href="#create-vault-policies">Create Vault Policies</a></li>
+        <li><a href="#create-vault-tokens">Create Vault Tokens</a>
+          <ul>
+            <li><a href="#public-site-vault-token">Public site Vault Token</a></li>
+            <li><a href="#private-site-vault-token">Private site Vault Token</a></li>
+            <li><a href="#podman-site-vault-token">Podman site Vault Token</a></li>
+          </ul>
+        </li>
+        <li><a href="#ansible-playbooks">Ansible Playbooks</a>
+          <ul>
+            <li><a href="#public-site">Public site</a></li>
+            <li><a href="#private-site">Private site</a></li>
+            <li><a href="#podman-site">Podman site</a></li>
+          </ul>
+        </li>
+        <li><a href="#creating-each-site">Creating each site</a></li>
+        <li><a href="#testing-the-application">Testing the application</a>
+          <ul>
+            <li><a href="#clean-up">Clean up</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <p><img src="/posts/20250311-skupper-ansible-vault/images/skupper-vault-ansible.jpg"></p>
+<h2 id="introduction">Introduction</h2>
+<p>When setting up a Skupper network, a single persona doesn’t always have access to all the participant clusters, namespaces, or non-Kubernetes hosts involved.</p>
+<p>This can create a significant hurdle for automation, as Access Tokens or Links generated at one site can’t be automatically shared with a target site.</p>
+<p>To address this, the best approach is to assign separate personas to handle the setup of each site within the Skupper network.</p>
+<p>This is where HashiCorp Vault comes in handy. Vault enables us to decentralize the token generation and installation processes, allowing them to happen independently and at different times.</p>
+<p>In this post, we’ll walk through an automated solution using Ansible. This method empowers different personas—each responsible for a single Skupper site—to build a Skupper network by leveraging HashiCorp Vault as a secure hub for creating and accessing Access Tokens.</p>
+<h2 id="pre-requisites">Pre-requisites</h2>
+<ul>
+<li><a href="https://www.vaultproject.io/">Hashicorp Vault</a></li>
+<li><a href="https://skupper.io/start/minikube.html">A minikube cluster</a></li>
+<li>Minikube tunnel running</li>
+<li>Skupper (&gt;= 2.0.0)</li>
+<li>Ansible (&gt;= 2.15.0)</li>
+<li>Podman (or Docker)</li>
+<li>Install the <a href="https://galaxy.ansible.com/ui/repo/published/skupper/v2/">skupper.v2</a> Ansible collection and its dependent python modules
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ansible-galaxy collection install skupper.v2
+</span></span><span style="display:flex;"><span>python -m pip install kubernetes PyYAML
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="scenario">Scenario</h2>
+<p>In order to make it easy and simple to evaluate this scenario, we will have both Vault and Podman
+running locally (on your own machine).</p>
+<p>The public and private namespaces can also run on a local minikube cluster, or any running cluster
+defined by the default kubernetes client config file: <code>${HOME}/.kube/config</code>.</p>
+<p>We are going to use a modified version of the <a href="https://github.com/skupperproject/skupper-example-patient-portal">Patient Portal example</a> (for Skupper V2),
+where we have two Skupper sites running on different namespaces, within the same Kubernetes cluster
+and a Podman site.</p>
+<p><img src="/posts/20250311-skupper-ansible-vault/images/patientportal-v2.png"></p>
+<p>In the <code>public</code> namespace, we will have a Front-end application that depends on a <code>payment-processor</code>
+microservice, which will run at the <code>private</code> namespace. The Front-End also needs access to a Database,
+which will run as a local podman container in the host machine.</p>
+<p>Hashicorp Vault will also run in development mode (never run it this way in production) for an easy and
+quick evaluation.</p>
+<p>We will create Vault policies to define which users can write tokens to a specific path in Vault and which others can read those tokens from it.</p>
+<p>Then we are going to use an Ansible playbook to setup each individual site, in a way that they can be applied
+in any order.</p>
+<h2 id="hands-on">Hands-on</h2>
+<h3 id="run-hashicorp-vault">Run Hashicorp Vault</h3>
+<p>First thing to do is to run Hashicorp Vault in development mode:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>vault server -dev -dev-root-token-id root
+</span></span></code></pre></div><h3 id="create-vault-policies">Create Vault Policies</h3>
+<p>Once it is running, we need to create the policies.</p>
+<p>Two policies will be created.
+One called <strong>public-admin</strong> which allows writing data to path <code>secret/public</code>.
+The other is called <strong>public-read</strong> which only allows reading data from <code>secret/public</code>.</p>
+<p>For that, we need to create two files: <code>public-admin.hcl</code> and <code>public-read.hcl</code>.
+You can download them here:</p>
+<ul>
+<li><a href="/posts/20250311-skupper-ansible-vault/resources/vault/public-admin.hcl"><code>public-admin.hcl</code></a></li>
+<li><a href="/posts/20250311-skupper-ansible-vault/resources/vault/public-read.hcl"><code>public-read.hcl</code></a></li>
+</ul>
+<p><strong>public-admin.hcl</strong></p>
+
+
+
+
+
+  <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-1"><a style="outline:none;text-decoration:none;color:inherit" href="#public-1">1</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-2"><a style="outline:none;text-decoration:none;color:inherit" href="#public-2">2</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-3"><a style="outline:none;text-decoration:none;color:inherit" href="#public-3">3</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">path</span> <span style="color:#e6db74">&#34;secret/data/public&#34;</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">capabilities</span> <span style="color:#960050;background-color:#1e0010">=</span> <span style="color:#960050;background-color:#1e0010">[</span><span style="color:#f92672">&#34;create&#34;</span>, <span style="color:#f92672">&#34;update&#34;</span>, <span style="color:#f92672">&#34;patch&#34;</span>, <span style="color:#f92672">&#34;read&#34;</span>, <span style="color:#f92672">&#34;delete&#34;</span><span style="color:#960050;background-color:#1e0010">]</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></td></tr></table>
+</div>
+</div>
+
+
+<p><strong>public-read.hcl</strong></p>
+
+
+
+
+
+  <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-1"><a style="outline:none;text-decoration:none;color:inherit" href="#public-1">1</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-2"><a style="outline:none;text-decoration:none;color:inherit" href="#public-2">2</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-3"><a style="outline:none;text-decoration:none;color:inherit" href="#public-3">3</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">path</span> <span style="color:#e6db74">&#34;secret/data/public&#34;</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">capabilities</span> <span style="color:#960050;background-color:#1e0010">=</span> <span style="color:#960050;background-color:#1e0010">[</span><span style="color:#f92672">&#34;read&#34;</span><span style="color:#960050;background-color:#1e0010">]</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></td></tr></table>
+</div>
+</div>
+
+
+<p>To create these policies, run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>export VAULT_ADDR<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;http://127.0.0.1:8200&#39;</span>
+</span></span><span style="display:flex;"><span>vault policy write public-admin public-admin.hcl
+</span></span><span style="display:flex;"><span>vault policy write public-read public-read.hcl
+</span></span></code></pre></div><h3 id="create-vault-tokens">Create Vault Tokens</h3>
+<p>With the policies in place, we need to create Vault Tokens associated with each of those policies.
+Here we can create three separate Vault Tokens, so each persona has access to their own tokens only.</p>
+<h4 id="public-site-vault-token">Public site Vault Token</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>export VAULT_ADDR<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;http://127.0.0.1:8200&#39;</span>
+</span></span><span style="display:flex;"><span>vault token create -display-name<span style="color:#f92672">=</span>public -policy<span style="color:#f92672">=</span>public-admin -format<span style="color:#f92672">=</span>json | jq -r .auth.client_token &gt; public.token
+</span></span></code></pre></div><h4 id="private-site-vault-token">Private site Vault Token</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>export VAULT_ADDR<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;http://127.0.0.1:8200&#39;</span>
+</span></span><span style="display:flex;"><span>vault token create -display-name<span style="color:#f92672">=</span>private -policy<span style="color:#f92672">=</span>public-read -format<span style="color:#f92672">=</span>json | jq -r .auth.client_token &gt; private.token
+</span></span></code></pre></div><h4 id="podman-site-vault-token">Podman site Vault Token</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>export VAULT_ADDR<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;http://127.0.0.1:8200&#39;</span>
+</span></span><span style="display:flex;"><span>vault token create -display-name<span style="color:#f92672">=</span>podman -policy<span style="color:#f92672">=</span>public-read -format<span style="color:#f92672">=</span>json | jq -r .auth.client_token &gt; podman.token
+</span></span></code></pre></div><h3 id="ansible-playbooks">Ansible Playbooks</h3>
+<p>Download the Ansible playbook files below:</p>
+<ul>
+<li><a href="/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-public.yaml">playbook-public.yaml</a></li>
+<li><a href="/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-private.yaml">playbook-private.yaml</a></li>
+<li><a href="/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-podman.yaml">playbook-podman.yaml</a></li>
+</ul>
+<h4 id="public-site">Public site</h4>
+<p>Playbook: <a href="/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-public.yaml">playbook-public.yaml</a>.</p>
+<ol>
+<li>This initial task ensures that the Skupper V2 Controller is running in the <code>skupper</code> namespace.
+It uses the latest development version of Skupper (v2-dev-release).</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-6"><a style="outline:none;text-decoration:none;color:inherit" href="#public-6">6</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-7"><a style="outline:none;text-decoration:none;color:inherit" href="#public-7">7</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-8"><a style="outline:none;text-decoration:none;color:inherit" href="#public-8">8</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-9"><a style="outline:none;text-decoration:none;color:inherit" href="#public-9">9</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Ensure Skupper V2 controller is running</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">kubernetes.core.k8s</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">state</span>: <span style="color:#ae81ff">present</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">src</span>: <span style="color:#ae81ff">https://github.com/skupperproject/skupper/releases/download/v2-dev-release/skupper-cluster-scope.yaml</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+
+
+<ol start="2">
+<li>Here we create all the resources needed to have the FrontEnd application running in the <code>public</code> namespace,
+as well as all the Skupper resources needed (Site and Listeners).</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-11"><a style="outline:none;text-decoration:none;color:inherit" href="#public-11">11</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-12"><a style="outline:none;text-decoration:none;color:inherit" href="#public-12">12</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-13"><a style="outline:none;text-decoration:none;color:inherit" href="#public-13">13</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-14"><a style="outline:none;text-decoration:none;color:inherit" href="#public-14">14</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-15"><a style="outline:none;text-decoration:none;color:inherit" href="#public-15">15</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-16"><a style="outline:none;text-decoration:none;color:inherit" href="#public-16">16</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Create public namespace resources</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">skupper.v2.resource</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">state</span>: <span style="color:#ae81ff">present</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">path</span>: <span style="color:#ae81ff">http://localhost:1313/posts/20250311-skupper-ansible-vault/resources/skupper/public.yaml</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># path: https://giorgetti.com.br/posts/20250311-skupper-ansible-vault/resources/skupper/public.yaml</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">public</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+
+
+<ol start="3">
+<li>A Skupper Link is then generated and stored in a host variable named <code>public</code>.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-18"><a style="outline:none;text-decoration:none;color:inherit" href="#public-18">18</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-19"><a style="outline:none;text-decoration:none;color:inherit" href="#public-19">19</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-20"><a style="outline:none;text-decoration:none;color:inherit" href="#public-20">20</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-21"><a style="outline:none;text-decoration:none;color:inherit" href="#public-21">21</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-22"><a style="outline:none;text-decoration:none;color:inherit" href="#public-22">22</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-23"><a style="outline:none;text-decoration:none;color:inherit" href="#public-23">23</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Create a Skupper Link</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">skupper.v2.token</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">public-token</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">public</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">type</span>: <span style="color:#ae81ff">link</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">register</span>: <span style="color:#ae81ff">public</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+
+
+<ol start="4">
+<li>Finally we store the Skupper Link generated in the previous task into Hashicorp Vault,
+and we do that using the Vault Token (credentials) provided through Ansible variable <code>vault_token</code>.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-25"><a style="outline:none;text-decoration:none;color:inherit" href="#public-25">25</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-26"><a style="outline:none;text-decoration:none;color:inherit" href="#public-26">26</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-27"><a style="outline:none;text-decoration:none;color:inherit" href="#public-27">27</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-28"><a style="outline:none;text-decoration:none;color:inherit" href="#public-28">28</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-29"><a style="outline:none;text-decoration:none;color:inherit" href="#public-29">29</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-30"><a style="outline:none;text-decoration:none;color:inherit" href="#public-30">30</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-31"><a style="outline:none;text-decoration:none;color:inherit" href="#public-31">31</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-32"><a style="outline:none;text-decoration:none;color:inherit" href="#public-32">32</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-33"><a style="outline:none;text-decoration:none;color:inherit" href="#public-33">33</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Store public Link in Vault</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">community.hashi_vault.vault_write</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">url</span>: <span style="color:#ae81ff">http://127.0.0.1:8200</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">path</span>: <span style="color:#ae81ff">secret/data/public</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">auth_method</span>: <span style="color:#ae81ff">token</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">token</span>: <span style="color:#e6db74">&#34;{{ lookup(&#39;file&#39;, vault_token) }}&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">data</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">data</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">token</span>: <span style="color:#e6db74">&#34;{{ public.token }}&#34;</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+
+
+<h4 id="private-site">Private site</h4>
+<ol>
+<li>The initial task, is the same as shown in the <code>playbook-public.yaml</code>. It ensures that the Skupper V2 Controller
+is running in the <code>skupper</code> namespace.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-6"><a style="outline:none;text-decoration:none;color:inherit" href="#public-6">6</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-7"><a style="outline:none;text-decoration:none;color:inherit" href="#public-7">7</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-8"><a style="outline:none;text-decoration:none;color:inherit" href="#public-8">8</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-9"><a style="outline:none;text-decoration:none;color:inherit" href="#public-9">9</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Ensure Skupper V2 controller is running</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">kubernetes.core.k8s</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">state</span>: <span style="color:#ae81ff">present</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">src</span>: <span style="color:#ae81ff">https://github.com/skupperproject/skupper/releases/download/v2-dev-release/skupper-cluster-scope.yaml</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+
+
+<ol start="2">
+<li>The following task creates all the resources needed to have the Payment Processor microservice running in the <code>private</code>
+namespace, as well as all the Skupper resources needed (Site and Connector).</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-11"><a style="outline:none;text-decoration:none;color:inherit" href="#public-11">11</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-12"><a style="outline:none;text-decoration:none;color:inherit" href="#public-12">12</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-13"><a style="outline:none;text-decoration:none;color:inherit" href="#public-13">13</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-14"><a style="outline:none;text-decoration:none;color:inherit" href="#public-14">14</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-15"><a style="outline:none;text-decoration:none;color:inherit" href="#public-15">15</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-16"><a style="outline:none;text-decoration:none;color:inherit" href="#public-16">16</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Create private namespace resources</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">skupper.v2.resource</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">state</span>: <span style="color:#ae81ff">present</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">path</span>: <span style="color:#ae81ff">http://localhost:1313/posts/20250311-skupper-ansible-vault/resources/skupper/private.yaml</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># path: https://giorgetti.com.br/posts/20250311-skupper-ansible-vault/resources/skupper/private.yaml</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">private</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+
+
+<ol start="3">
+<li>The Skupper Link is consumed from Vault using the private Vault Token into a host variable named <code>public</code>.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-18"><a style="outline:none;text-decoration:none;color:inherit" href="#public-18">18</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-19"><a style="outline:none;text-decoration:none;color:inherit" href="#public-19">19</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-20"><a style="outline:none;text-decoration:none;color:inherit" href="#public-20">20</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-21"><a style="outline:none;text-decoration:none;color:inherit" href="#public-21">21</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-22"><a style="outline:none;text-decoration:none;color:inherit" href="#public-22">22</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-23"><a style="outline:none;text-decoration:none;color:inherit" href="#public-23">23</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-24"><a style="outline:none;text-decoration:none;color:inherit" href="#public-24">24</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Consume public site link from Vault</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">community.hashi_vault.vault_read</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">url</span>: <span style="color:#ae81ff">http://127.0.0.1:8200</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">path</span>: <span style="color:#ae81ff">secret/data/public</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">auth_method</span>: <span style="color:#ae81ff">token </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">token</span>: <span style="color:#e6db74">&#34;{{ lookup(&#39;file&#39;, vault_token) }}&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">register</span>: <span style="color:#ae81ff">public</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+
+
+<ol start="4">
+<li>Last task is to create the Skupper Link as a resource into the <code>private</code> namespace.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-26"><a style="outline:none;text-decoration:none;color:inherit" href="#public-26">26</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-27"><a style="outline:none;text-decoration:none;color:inherit" href="#public-27">27</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-28"><a style="outline:none;text-decoration:none;color:inherit" href="#public-28">28</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-29"><a style="outline:none;text-decoration:none;color:inherit" href="#public-29">29</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Creating link to public</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">skupper.v2.resource</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">def</span>: <span style="color:#e6db74">&#34;{{ public.data.data.data.token }}&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">private</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+
+
+<h4 id="podman-site">Podman site</h4>
+<ol>
+<li>The first task runs the Database as a podman container</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-6"><a style="outline:none;text-decoration:none;color:inherit" href="#public-6"> 6</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-7"><a style="outline:none;text-decoration:none;color:inherit" href="#public-7"> 7</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-8"><a style="outline:none;text-decoration:none;color:inherit" href="#public-8"> 8</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-9"><a style="outline:none;text-decoration:none;color:inherit" href="#public-9"> 9</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-10"><a style="outline:none;text-decoration:none;color:inherit" href="#public-10">10</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-11"><a style="outline:none;text-decoration:none;color:inherit" href="#public-11">11</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-12"><a style="outline:none;text-decoration:none;color:inherit" href="#public-12">12</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-13"><a style="outline:none;text-decoration:none;color:inherit" href="#public-13">13</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Run the database container</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">containers.podman.podman_container</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">database</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">quay.io/skupper/patient-portal-database</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">state</span>: <span style="color:#ae81ff">started</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>          - <span style="color:#ae81ff">5432</span>:<span style="color:#ae81ff">5432</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">remove</span>: <span style="color:#66d9ef">true</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+
+
+<ol start="2">
+<li>Next we create the Skupper resources using <code>podman</code> as the platform</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-15"><a style="outline:none;text-decoration:none;color:inherit" href="#public-15">15</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-16"><a style="outline:none;text-decoration:none;color:inherit" href="#public-16">16</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-17"><a style="outline:none;text-decoration:none;color:inherit" href="#public-17">17</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-18"><a style="outline:none;text-decoration:none;color:inherit" href="#public-18">18</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-19"><a style="outline:none;text-decoration:none;color:inherit" href="#public-19">19</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-20"><a style="outline:none;text-decoration:none;color:inherit" href="#public-20">20</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Create podman site resources</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">skupper.v2.resource</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">state</span>: <span style="color:#ae81ff">present</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">path</span>: <span style="color:#ae81ff">http://localhost:1313/posts/20250311-skupper-ansible-vault/resources/skupper/podman.yaml</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># path: https://giorgetti.com.br/posts/20250311-skupper-ansible-vault/resources/skupper/podman.yaml</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">podman</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+
+
+<ol start="3">
+<li>Skupper Link is consumed from Vault using the podman Vault Token into a host variable named <code>public</code>.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-22"><a style="outline:none;text-decoration:none;color:inherit" href="#public-22">22</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-23"><a style="outline:none;text-decoration:none;color:inherit" href="#public-23">23</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-24"><a style="outline:none;text-decoration:none;color:inherit" href="#public-24">24</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-25"><a style="outline:none;text-decoration:none;color:inherit" href="#public-25">25</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-26"><a style="outline:none;text-decoration:none;color:inherit" href="#public-26">26</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-27"><a style="outline:none;text-decoration:none;color:inherit" href="#public-27">27</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-28"><a style="outline:none;text-decoration:none;color:inherit" href="#public-28">28</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Consume public site link from Vault</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">community.hashi_vault.vault_read</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">url</span>: <span style="color:#ae81ff">http://127.0.0.1:8200</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">path</span>: <span style="color:#ae81ff">secret/data/public</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">auth_method</span>: <span style="color:#ae81ff">token </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">token</span>: <span style="color:#e6db74">&#34;{{ lookup(&#39;file&#39;, vault_token) }}&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">register</span>: <span style="color:#ae81ff">public</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+
+
+<ol start="4">
+<li>The consumed Skupper Link is created as a resource into the podman site definition.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-30"><a style="outline:none;text-decoration:none;color:inherit" href="#public-30">30</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-31"><a style="outline:none;text-decoration:none;color:inherit" href="#public-31">31</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-32"><a style="outline:none;text-decoration:none;color:inherit" href="#public-32">32</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-33"><a style="outline:none;text-decoration:none;color:inherit" href="#public-33">33</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Creating link to public</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">skupper.v2.resource</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">def</span>: <span style="color:#e6db74">&#34;{{ public.data.data.data.token }}&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">podman</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+
+
+<ol start="5">
+<li>Finally the last task to perform is the Podman site initialization. Differently than Kubernetes sites, Non-kubernetes
+sites must be statically initialized once all resources are placed.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-35"><a style="outline:none;text-decoration:none;color:inherit" href="#public-35">35</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-36"><a style="outline:none;text-decoration:none;color:inherit" href="#public-36">36</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-37"><a style="outline:none;text-decoration:none;color:inherit" href="#public-37">37</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="public-38"><a style="outline:none;text-decoration:none;color:inherit" href="#public-38">38</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Initialize podman site</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">skupper.v2.system</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">action</span>: <span style="color:#ae81ff">setup</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">podman</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+
+
+<h3 id="creating-each-site">Creating each site</h3>
+<p>Now it is time to run the playbooks, as if they were run by different personas.
+Here are the commands run the playbooks for each site:</p>
+<ol>
+<li>Public site</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ansible-playbook -i localhost, playbook-public.yaml -e vault_token<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>PWD<span style="color:#e6db74">}</span><span style="color:#e6db74">/public.token&#34;</span>
+</span></span></code></pre></div><ol start="2">
+<li>Private site</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ansible-playbook -i localhost, playbook-private.yaml -e vault_token<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>PWD<span style="color:#e6db74">}</span><span style="color:#e6db74">/private.token&#34;</span>
+</span></span></code></pre></div><ol start="3">
+<li>Podman site</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ansible-playbook -i localhost, playbook-podman.yaml -e vault_token<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>PWD<span style="color:#e6db74">}</span><span style="color:#e6db74">/podman.token&#34;</span>
+</span></span></code></pre></div><h3 id="testing-the-application">Testing the application</h3>
+<p>To validate that the application is running, you can run the following command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl -n public get site,listener
+</span></span></code></pre></div><p>&hellip; until you see that:</p>
+<ul>
+<li><strong>SITES IN NETWORK</strong> equals to <strong>3</strong></li>
+<li><strong>HAS MATCHING CONNECTOR</strong> is <strong>true</strong> for both listeners</li>
+</ul>
+<p>Then you can port-forward to the Front-End application and validate it through your browser:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl -n public port-forward deployment/frontend <span style="color:#ae81ff">8080</span>
+</span></span></code></pre></div><p>Then open your browser and go to <code>http://127.0.0.1:8080</code>.</p>
+<h4 id="clean-up">Clean up</h4>
+<p>To clean up, you can download the following playbook: <a href="/posts/20250311-skupper-ansible-vault/resources/ansible/playbook-teardown.yaml">playbook-teardown.yaml</a>,
+then execute:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ansible-playbook -i localhost, playbook-teardown.yaml
+</span></span></code></pre></div><h2 id="conclusion">Conclusion</h2>
+<p>When a single person or team can’t automate the entire Virtual Application Network (VAN) setup,
+HashiCorp Vault provides an excellent solution for decentralizing its configuration.</p>
+<p>It allows users to securely share and access Skupper Links via internal Vault paths,
+with permissions tailored for reading or writing as needed.</p>
+<p>This approach delivers fully independent administration for your VAN,
+boosting flexibility and enabling automation that’s finely tuned to individual site configurations.</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://fgiorgetti.github.io/tags/skupper/">skupper</a></span>
+        <span class="tag"><a href="https://fgiorgetti.github.io/tags/kubernetes/">kubernetes</a></span>
+        <span class="tag"><a href="https://fgiorgetti.github.io/tags/ansible/">ansible</a></span>
+        <span class="tag"><a href="https://fgiorgetti.github.io/tags/podman/">podman</a></span>
+        <span class="tag"><a href="https://fgiorgetti.github.io/tags/vault/">vault</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1368 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2025-03-17 22:20 -0300
+        
+
+         
+          
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        
+        <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+        </div>
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://fgiorgetti.github.io/posts/20250310-skupper-ansible-v2/">
+                    <span class="button__text">Maintaining a Skupper network using Ansible</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+      
+        <div id="comments">
+          <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "giorgetti" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        </div>
+      
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.63e1cd4087b02bc78961fcab2aaf77e957e2227557c73ab774f1cc4a9db0645e90d2403ca03e55eb0887e432e82aea10afe7f125052af6dd46cfea148ecbc663.js" integrity="sha512-Y&#43;HNQIewK8eJYfyrKq936VfiInVXxzq3dPHMSp2wZF6Q0kA8oD5V6wiH5DLoKuoQr&#43;fxJQUq9t1Gz&#43;oUjsvGYw=="></script>
+
+
+
+    </body>
+</html>

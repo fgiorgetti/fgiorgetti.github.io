@@ -1,0 +1,39 @@
+---
+- name: Setup the Podman site
+  hosts: all
+  connection: local
+  tasks:
+    - name: Run the database container
+      containers.podman.podman_container:
+        name: database
+        image: quay.io/skupper/patient-portal-database
+        state: started
+        ports:
+          - 5432:5432
+        remove: true
+
+    - name: Create podman site resources
+      skupper.v2.resource:
+        state: present
+        path: http://localhost:1313/posts/20250311-skupper-ansible-vault/resources/skupper/podman.yaml
+        # path: https://giorgetti.com.br/posts/20250311-skupper-ansible-vault/resources/skupper/podman.yaml
+        platform: podman
+
+    - name: Consume public site link from Vault
+      community.hashi_vault.vault_read:
+        url: http://127.0.0.1:8200
+        path: secret/data/public
+        auth_method: token 
+        token: "{{ lookup('file', vault_token) }}"
+      register: public
+
+    - name: Creating link to public
+      skupper.v2.resource:
+        def: "{{ public.data.data.data.token }}"
+        platform: podman
+
+    - name: Initialize podman site
+      skupper.v2.system:
+        action: setup
+        platform: podman
+

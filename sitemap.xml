@@ -3,27 +3,33 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://fgiorgetti.github.io/tags/ansible/</loc>
-    <lastmod>2025-03-10T17:11:45-03:00</lastmod>
+    <lastmod>2025-03-17T22:20:50-03:00</lastmod>
+  </url><url>
+    <loc>https://fgiorgetti.github.io/posts/20250311-skupper-ansible-vault/</loc>
+    <lastmod>2025-03-17T22:20:50-03:00</lastmod>
   </url><url>
     <loc>https://fgiorgetti.github.io/</loc>
-    <lastmod>2025-03-10T17:11:45-03:00</lastmod>
+    <lastmod>2025-03-17T22:20:50-03:00</lastmod>
   </url><url>
     <loc>https://fgiorgetti.github.io/tags/kubernetes/</loc>
-    <lastmod>2025-03-10T17:11:45-03:00</lastmod>
-  </url><url>
-    <loc>https://fgiorgetti.github.io/posts/20250310-skupper-ansible-v2/</loc>
-    <lastmod>2025-03-10T17:11:45-03:00</lastmod>
+    <lastmod>2025-03-17T22:20:50-03:00</lastmod>
   </url><url>
     <loc>https://fgiorgetti.github.io/tags/podman/</loc>
-    <lastmod>2025-03-10T17:11:45-03:00</lastmod>
+    <lastmod>2025-03-17T22:20:50-03:00</lastmod>
   </url><url>
     <loc>https://fgiorgetti.github.io/posts/</loc>
-    <lastmod>2025-03-10T17:11:45-03:00</lastmod>
+    <lastmod>2025-03-17T22:20:50-03:00</lastmod>
   </url><url>
     <loc>https://fgiorgetti.github.io/tags/skupper/</loc>
-    <lastmod>2025-03-10T17:11:45-03:00</lastmod>
+    <lastmod>2025-03-17T22:20:50-03:00</lastmod>
   </url><url>
     <loc>https://fgiorgetti.github.io/tags/</loc>
+    <lastmod>2025-03-17T22:20:50-03:00</lastmod>
+  </url><url>
+    <loc>https://fgiorgetti.github.io/tags/vault/</loc>
+    <lastmod>2025-03-17T22:20:50-03:00</lastmod>
+  </url><url>
+    <loc>https://fgiorgetti.github.io/posts/20250310-skupper-ansible-v2/</loc>
     <lastmod>2025-03-10T17:11:45-03:00</lastmod>
   </url><url>
     <loc>https://fgiorgetti.github.io/tags/compose/</loc>

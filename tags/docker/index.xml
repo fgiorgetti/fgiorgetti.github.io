@@ -16,5 +16,12 @@
       <guid>https://fgiorgetti.github.io/posts/20240322-skupper-podman-ingresses/</guid>
       <description>Introduction In order to evaluate some strategies for dealing with ingresses using a stable name resolution within a container network (Podman or Docker), I have used the following scenario as the foundation for this study:&#xA;In the following sections, I will describe each component in more detail.&#xA;Artifacts for each strategy are also available and they can be easily executed using podman-compose or docker compose.&#xA;Service Proxies The service proxies are the main objects to be explored here.</description>
     </item>
+    <item>
+      <title>Running skupper-router containers with compose</title>
+      <link>https://fgiorgetti.github.io/posts/20240320-router-with-compose/</link>
+      <pubDate>Wed, 20 Mar 2024 09:14:27 -0300</pubDate>
+      <guid>https://fgiorgetti.github.io/posts/20240320-router-with-compose/</guid>
+      <description>A compose file can also be an interesting way to run a static bundle for skupper-routers. Here I am using a two routers network, named west and east.&#xA;The west router has an inter-router link (secured with TLS) defined to connect with the east one (using skupper-router-east hostname).&#xA;All the configuration, sample certificates and compose files can be downloaded by clicking the following link: Example files (tarball).&#xA;Once you extract the tarball, you will find a new directory named example which contains the compose.</description>
+    </item>
   </channel>
 </rss>

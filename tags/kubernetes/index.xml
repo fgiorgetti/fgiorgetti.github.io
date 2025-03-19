@@ -7,22 +7,8 @@
     <generator>Hugo</generator>
     <language>en</language>
     <copyright>Fernando Giorgetti</copyright>
-    <lastBuildDate>Mon, 17 Mar 2025 22:20:50 -0300</lastBuildDate>
+    <lastBuildDate>Tue, 19 Mar 2024 10:19:00 -0300</lastBuildDate>
     <atom:link href="https://fgiorgetti.github.io/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Decentralizing Skupper network setup with Vault and Ansible</title>
-      <link>https://fgiorgetti.github.io/posts/20250311-skupper-ansible-vault/</link>
-      <pubDate>Mon, 17 Mar 2025 22:20:50 -0300</pubDate>
-      <guid>https://fgiorgetti.github.io/posts/20250311-skupper-ansible-vault/</guid>
-      <description>Introduction When setting up a Skupper network, a single persona doesn’t always have access to all the participant clusters, namespaces, or non-Kubernetes hosts involved.&#xA;This can create a significant hurdle for automation, as Access Tokens or Links generated at one site can’t be automatically shared with a target site.&#xA;To address this, the best approach is to assign separate personas to handle the setup of each site within the Skupper network.</description>
-    </item>
-    <item>
-      <title>Maintaining a Skupper network using Ansible</title>
-      <link>https://fgiorgetti.github.io/posts/20250310-skupper-ansible-v2/</link>
-      <pubDate>Mon, 10 Mar 2025 17:11:45 -0300</pubDate>
-      <guid>https://fgiorgetti.github.io/posts/20250310-skupper-ansible-v2/</guid>
-      <description>Introduction Skupper version 2.0.0 has landed and it&amp;rsquo;s bringing a shiny new Ansible collection with it, now available on Ansible Galaxy as skupper.v2.&#xA;This isn&amp;rsquo;t just another update, it&amp;rsquo;s a toolkit that empowers you to define and manage Skupper networks with ease, no matter where they run — Kubernetes, Podman, Docker, or bare-metal Linux.&#xA;Declarative power at your fingertips Skupper 2.0.0 redefines how Virtual Application Networks (VANs) come to life. At its core is a sleek, declarative approach powered by a fresh set of Kubernetes Custom Resource Definitions (CRDs).</description>
-    </item>
     <item>
       <title>Playing with kube files using Podman</title>
       <link>https://fgiorgetti.github.io/posts/20240319-podman-kube-play/</link>

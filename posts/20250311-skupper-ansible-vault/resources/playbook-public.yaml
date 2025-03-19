@@ -1,4 +1,0 @@
----
-- name: Setup the Public site with Vault
-  hosts: all
-  connection: local
